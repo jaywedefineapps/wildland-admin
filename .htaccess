@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    RewriteCond %{HTTPS} !=on
+    # This checks to make sure the connection is not already HTTPS
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
@@ -25,4 +28,3 @@
  deny from all
  satisfy all
 </Files>
-
