@@ -5,7 +5,7 @@ name: Build and deploy PHP app to Azure Web App - wildland-app
 
 on:
   push:
-    branches: 
+    branches:
       - main
   workflow_dispatch:
 
@@ -74,6 +74,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: php-app
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_DB8EE39C76934E918266A3AE01ABCD58 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B354518A1BE140D6A011935095A7EBE4 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DF2E0379E99043AC976F77F96F19454B }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
