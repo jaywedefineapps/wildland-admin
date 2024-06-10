@@ -88,9 +88,13 @@ jobs:
 
       - name: Run database migrations
         run: php artisan migrate --force
+        env:
+          AZURE_HTTP_USER_AGENT: 'GitHubActions'
 
       - name: Clear application cache
         run: php artisan config:cache
+        env:
+          AZURE_HTTP_USER_AGENT: 'GitHubActions'
 
 
 
