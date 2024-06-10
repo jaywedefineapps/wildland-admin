@@ -144,7 +144,6 @@ if (! function_exists('asset')) {
      */
     function asset($path, $secure = null)
     {
-        // return app('url')->asset("public/".$path, $secure);
         return app('url')->asset($path, $secure);
     }
 }
@@ -324,7 +323,7 @@ if (! function_exists('csrf_field')) {
      */
     function csrf_field()
     {
-        return new HtmlString('<input type="hidden" name="_token" value="'.csrf_token().'">');
+        return new HtmlString('<input type="hidden" name="_token" value="'.csrf_token().'" autocomplete="off">');
     }
 }
 
@@ -728,10 +727,13 @@ if (! function_exists('rescue')) {
     /**
      * Catch a potential exception and return a default value.
      *
-     * @param  callable  $callback
-     * @param  mixed  $rescue
+     * @template TRescueValue
+     * @template TRescueFallback
+     *
+     * @param  callable(): TRescueValue  $callback
+     * @param  (callable(\Throwable): TRescueFallback)|TRescueFallback  $rescue
      * @param  bool|callable  $report
-     * @return mixed
+     * @return TRescueValue|TRescueFallback
      */
     function rescue(callable $callback, $rescue = null, $report = true)
     {
@@ -927,7 +929,7 @@ if (! function_exists('trans_choice')) {
      * Translates the given message based on a count.
      *
      * @param  string  $key
-     * @param  \Countable|int|array  $number
+     * @param  \Countable|int|float|array  $number
      * @param  array  $replace
      * @param  string|null  $locale
      * @return string

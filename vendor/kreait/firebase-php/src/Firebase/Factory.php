@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Kreait\Firebase;
 
+use Beste\Cache\InMemoryCache;
 use Beste\Clock\SystemClock;
 use Beste\Clock\WrappingClock;
 use Beste\Json;
 use Firebase\JWT\CachedKeySet;
 use Google\Auth\ApplicationDefaultCredentials;
-use Google\Auth\Cache\MemoryCacheItemPool;
 use Google\Auth\Credentials\ServiceAccountCredentials;
 use Google\Auth\FetchAuthTokenCache;
 use Google\Auth\FetchAuthTokenInterface;
@@ -24,7 +24,8 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\Utils as GuzzleUtils;
-use GuzzleHttp\RequestOptions;
+use Kreait\Firebase\AppCheck\AppCheckTokenGenerator;
+use Kreait\Firebase\AppCheck\AppCheckTokenVerifier;
 use Kreait\Firebase\Auth\ApiClient;
 use Kreait\Firebase\Auth\CustomTokenViaGoogleCredentials;
 use Kreait\Firebase\Auth\SignIn\GuzzleHandler;
@@ -73,10 +74,14 @@ final class Factory
         'https://www.googleapis.com/auth/securetoken',
     ];
 
-    /** @var non-empty-string|null */
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $databaseUrl = null;
 
-    /** @var non-empty-string|null */
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $defaultStorageBucket = null;
 
     /**
@@ -94,32 +99,53 @@ final class Factory
     private CacheItemPoolInterface $keySetCache;
     private ClockInterface $clock;
 
-    /** @var callable|null */
+    /**
+     * @var callable|null
+     */
     private $httpLogMiddleware;
 
-    /** @var callable|null */
+    /**
+     * @var callable|null
+     */
     private $httpDebugLogMiddleware;
 
-    /** @var callable|null */
+    /**
+     * @var callable|null
+     */
     private $databaseAuthVariableOverrideMiddleware;
 
-    /** @var non-empty-string|null */
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $tenantId = null;
+    private HttpFactory $httpFactory;
     private HttpClientOptions $httpClientOptions;
+
+    /**
+     * @var array<non-empty-string, mixed>
+     */
+    private array $firestoreClientConfig = [];
 
     public function __construct()
     {
         $this->clock = SystemClock::create();
-        $this->verifierCache = new MemoryCacheItemPool();
-        $this->authTokenCache = new MemoryCacheItemPool();
-        $this->keySetCache = new MemoryCacheItemPool();
+        $this->httpFactory = new HttpFactory();
+        $this->verifierCache = new InMemoryCache($this->clock);
+        $this->authTokenCache = new InMemoryCache($this->clock);
+        $this->keySetCache = new InMemoryCache($this->clock);
         $this->httpClientOptions = HttpClientOptions::default();
 
         $googleApplicationCredentials = Util::getenv('GOOGLE_APPLICATION_CREDENTIALS');
 
-        if ($googleApplicationCredentials !== null && str_starts_with($googleApplicationCredentials, '{')) {
-            $this->serviceAccount = Json::decode($googleApplicationCredentials, true);
+        if ($googleApplicationCredentials === null) {
+            return;
         }
+
+        if (!str_starts_with($googleApplicationCredentials, '{')) {
+            return;
+        }
+
+        $this->serviceAccount = Json::decode($googleApplicationCredentials, true);
     }
 
     /**
@@ -203,6 +229,25 @@ final class Factory
     {
         $factory = clone $this;
         $factory->databaseAuthVariableOverrideMiddleware = Middleware::addDatabaseAuthVariableOverride($override);
+
+        return $factory;
+    }
+
+    /**
+     * @param non-empty-string $database
+     */
+    public function withFirestoreDatabase(string $database): self
+    {
+        return $this->withFirestoreClientConfig(['database' => $database]);
+    }
+
+    /**
+     * @param array<non-empty-string, mixed> $config
+     */
+    public function withFirestoreClientConfig(array $config): self
+    {
+        $factory = clone $this;
+        $factory->firestoreClientConfig = array_merge($this->firestoreClientConfig, $config);
 
         return $factory;
     }
@@ -308,8 +353,8 @@ final class Factory
 
         $keySet = new CachedKeySet(
             'https://firebaseappcheck.googleapis.com/v1/jwks',
-            new Client(),
-            new HttpFactory(),
+            new Client($this->httpClientOptions->guzzleConfig()),
+            $this->httpFactory,
             $this->keySetCache,
             21600,
             true,
@@ -317,12 +362,12 @@ final class Factory
 
         return new AppCheck(
             new AppCheck\ApiClient($http),
-            new AppCheck\AppCheckTokenGenerator(
+            new AppCheckTokenGenerator(
                 $this->serviceAccount['client_email'],
                 $this->serviceAccount['private_key'],
                 $this->clock,
             ),
-            new AppCheck\AppCheckTokenVerifier($projectId, $keySet),
+            new AppCheckTokenVerifier($projectId, $keySet),
         );
     }
 
@@ -375,10 +420,10 @@ final class Factory
         $errorHandler = new MessagingApiExceptionConverter($this->clock);
 
         $messagingApiClient = new Messaging\ApiClient(
-            $this->createApiClient([
-                'base_uri' => 'https://fcm.googleapis.com/v1/projects/'.$projectId,
-            ]),
-            $errorHandler,
+            $this->createApiClient(),
+            $projectId,
+            $this->httpFactory,
+            $this->httpFactory,
         );
 
         $appInstanceApiClient = new AppInstanceApiClient(
@@ -391,7 +436,7 @@ final class Factory
             $errorHandler,
         );
 
-        return new Messaging($projectId, $messagingApiClient, $appInstanceApiClient);
+        return new Messaging($messagingApiClient, $appInstanceApiClient, $errorHandler);
     }
 
     /**
@@ -399,7 +444,11 @@ final class Factory
      */
     public function createDynamicLinksService($defaultDynamicLinksDomain = null): Contract\DynamicLinks
     {
-        $apiClient = $this->createApiClient();
+        $apiClient = new DynamicLink\ApiClient(
+            $this->createApiClient(),
+            $this->httpFactory,
+            $this->httpFactory,
+        );
 
         $defaultDynamicLinksDomain = trim((string) $defaultDynamicLinksDomain);
 
@@ -412,8 +461,10 @@ final class Factory
 
     public function createFirestore(): Contract\Firestore
     {
+        $config = $this->googleCloudClientConfig() + $this->firestoreClientConfig;
+
         try {
-            $firestoreClient = new FirestoreClient($this->googleCloudClientConfig());
+            $firestoreClient = new FirestoreClient($config);
         } catch (Throwable $e) {
             throw new RuntimeException('Unable to create a FirestoreClient: '.$e->getMessage(), $e->getCode(), $e);
         }
@@ -433,8 +484,6 @@ final class Factory
     }
 
     /**
-     * @codeCoverageIgnore
-     *
      * @return array{
      *     credentialsType: string|null,
      *     databaseUrl: string,
@@ -489,22 +538,9 @@ final class Factory
     public function createApiClient(?array $config = null, ?array $middlewares = null): Client
     {
         $config ??= [];
+        $middlewares ??= [];
 
-        if ($proxy = $this->httpClientOptions->proxy()) {
-            $config[RequestOptions::PROXY] = $proxy;
-        }
-
-        if ($connectTimeout = $this->httpClientOptions->connectTimeout()) {
-            $config[RequestOptions::CONNECT_TIMEOUT] = $connectTimeout;
-        }
-
-        if ($readTimeout = $this->httpClientOptions->readTimeout()) {
-            $config[RequestOptions::READ_TIMEOUT] = $readTimeout;
-        }
-
-        if ($totalTimeout = $this->httpClientOptions->timeout()) {
-            $config[RequestOptions::TIMEOUT] = $totalTimeout;
-        }
+        $config = [...$this->httpClientOptions->guzzleConfig(), ...$config];
 
         $handler = HandlerStack::create();
 
@@ -516,10 +552,12 @@ final class Factory
             $handler->push($this->httpDebugLogMiddleware, 'http_debug_logs');
         }
 
-        if ($middlewares !== null) {
-            foreach ($middlewares as $middleware) {
-                $handler->push($middleware);
-            }
+        foreach ($this->httpClientOptions->guzzleMiddlewares() as $middleware) {
+            $handler->push($middleware['middleware'], $middleware['name']);
+        }
+
+        foreach ($middlewares as $middleware) {
+            $handler->push($middleware);
         }
 
         $credentials = $this->getGoogleAuthTokenCredentials();
@@ -535,8 +573,6 @@ final class Factory
         $authTokenHandler = HttpHandlerFactory::build(new Client($config));
 
         $handler->push(new AuthTokenMiddleware($credentials, $authTokenHandler));
-
-        $handler->push(Middleware::responseWithSubResponses());
 
         $config['handler'] = $handler;
         $config['auth'] = 'google_auth';

@@ -4,52 +4,61 @@ declare(strict_types=1);
 
 namespace Kreait\Firebase\Messaging;
 
+use Beste\Json;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Pool;
 use GuzzleHttp\Promise\PromiseInterface;
-use Kreait\Firebase\Exception\FirebaseException;
-use Kreait\Firebase\Exception\MessagingApiExceptionConverter;
-use Kreait\Firebase\Exception\MessagingException;
+use Iterator;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Throwable;
+use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * @internal
  */
 class ApiClient
 {
-    private ClientInterface $client;
-    private MessagingApiExceptionConverter $errorHandler;
-
-    public function __construct(ClientInterface $client, MessagingApiExceptionConverter $errorHandler)
-    {
-        $this->client = $client;
-        $this->errorHandler = $errorHandler;
+    public function __construct(
+        private readonly ClientInterface $client,
+        private readonly string $projectId,
+        private readonly RequestFactoryInterface $requestFactory,
+        private readonly StreamFactoryInterface $streamFactory,
+    ) {
     }
 
-    /**
-     * @param array<string, mixed> $options
-     *
-     * @throws FirebaseException
-     * @throws MessagingException
-     */
-    public function send(RequestInterface $request, array $options = []): ResponseInterface
+    public function createSendRequestForMessage(Message $message, bool $validateOnly): RequestInterface
     {
-        try {
-            return $this->client->send($request, $options);
-        } catch (Throwable $e) {
-            throw $this->errorHandler->convertException($e);
+        $request = $this->requestFactory
+            ->createRequest(
+                'POST',
+                'https://fcm.googleapis.com/v1/projects/'.$this->projectId.'/messages:send',
+            )
+        ;
+
+        $payload = ['message' => $message];
+
+        if ($validateOnly === true) {
+            $payload['validate_only'] = true;
         }
+
+        $body = $this->streamFactory->createStream(Json::encode($payload));
+
+        return $request
+            ->withProtocolVersion('2.0')
+            ->withBody($body)
+            ->withHeader('Content-Type', 'application/json; charset=UTF-8')
+            ->withHeader('Content-Length', (string) $body->getSize())
+        ;
     }
 
     /**
-     * @param array<string, mixed> $options
+     * @param list<RequestInterface>|Iterator<RequestInterface> $requests
+     * @param array<string, mixed> $config
      */
-    public function sendAsync(RequestInterface $request, array $options = []): PromiseInterface
+    public function pool(array|Iterator $requests, array $config): PromiseInterface
     {
-        return $this->client->sendAsync($request, $options)
-            ->then(null, function (Throwable $e): void {
-                throw $this->errorHandler->convertException($e);
-            });
+        $pool = new Pool($this->client, $requests, $config);
+
+        return $pool->promise();
     }
 }

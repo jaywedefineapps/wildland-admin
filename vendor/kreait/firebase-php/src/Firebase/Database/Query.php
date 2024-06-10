@@ -21,6 +21,7 @@ use Kreait\Firebase\Exception\Database\DatabaseNotFound;
 use Kreait\Firebase\Exception\Database\UnsupportedQuery;
 use Kreait\Firebase\Exception\DatabaseException;
 use Psr\Http\Message\UriInterface;
+use Stringable;
 
 /**
  * A Query sorts and filters the data at a database location so only a subset of the child data is included.
@@ -35,22 +36,19 @@ use Psr\Http\Message\UriInterface;
  *
  * @see https://firebase.google.com/docs/reference/js/firebase.database.Query
  */
-class Query
+class Query implements Stringable
 {
-    private Reference $reference;
-    private ApiClient $apiClient;
-
-    /** @var Filter[] */
+    /**
+     * @var Filter[]
+     */
     private array $filters = [];
     private ?Sorter $sorter = null;
 
     /**
      * @internal
      */
-    public function __construct(Reference $reference, ApiClient $apiClient)
+    public function __construct(private readonly Reference $reference, private readonly ApiClient $apiClient)
     {
-        $this->reference = $reference;
-        $this->apiClient = $apiClient;
     }
 
     /**

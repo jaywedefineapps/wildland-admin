@@ -20,14 +20,20 @@ final class ValidatedActionCodeSettings implements ActionCodeSettings
     private ?bool $canHandleCodeInApp = null;
     private ?UriInterface $dynamicLinkDomain = null;
 
-    /** @var non-empty-string|null */
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $androidPackageName = null;
 
-    /** @var non-empty-string|null */
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $androidMinimumVersion = null;
     private ?bool $androidInstallApp = null;
 
-    /** @var non-empty-string|null */
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $iOSBundleId = null;
 
     private function __construct()
@@ -46,7 +52,7 @@ final class ValidatedActionCodeSettings implements ActionCodeSettings
     {
         $instance = new self();
 
-        $settings = array_filter($settings, static fn ($value) => $value !== null);
+        $settings = array_filter($settings, static fn($value) => $value !== null);
 
         foreach ($settings as $key => $value) {
             switch (mb_strtolower($key)) {
@@ -110,6 +116,6 @@ final class ValidatedActionCodeSettings implements ActionCodeSettings
             'androidMinimumVersion' => $this->androidMinimumVersion,
             'androidInstallApp' => $this->androidInstallApp,
             'iOSBundleId' => $this->iOSBundleId,
-        ], static fn ($value) => is_bool($value) || (is_string($value) && $value !== ''));
+        ], static fn($value) => is_bool($value) || (is_string($value) && $value !== ''));
     }
 }

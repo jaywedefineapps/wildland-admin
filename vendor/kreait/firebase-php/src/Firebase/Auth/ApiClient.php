@@ -8,7 +8,7 @@ use Beste\Json;
 use DateInterval;
 use GuzzleHttp\ClientInterface;
 use Kreait\Firebase\Auth\CreateSessionCookie\GuzzleApiClientHandler;
-use Kreait\Firebase\Auth\SignIn\Handler as SignInHandler;
+use Kreait\Firebase\Auth\SignIn\GuzzleHandler;
 use Kreait\Firebase\Exception\Auth\EmailNotFound;
 use Kreait\Firebase\Exception\Auth\ExpiredOobCode;
 use Kreait\Firebase\Exception\Auth\InvalidOobCode;
@@ -46,7 +46,7 @@ class ApiClient
         private readonly string $projectId,
         private readonly ?string $tenantId,
         private readonly ClientInterface $client,
-        private readonly SignInHandler $signInHandler,
+        private readonly GuzzleHandler $signInHandler,
         private readonly ClockInterface $clock,
     ) {
         $this->errorHandler = new AuthApiExceptionConverter();
@@ -248,13 +248,15 @@ class ApiClient
     public function createSessionCookie(string $idToken, int|DateInterval $ttl): string
     {
         return (new GuzzleApiClientHandler($this->client, $this->projectId))
-            ->handle(CreateSessionCookie::forIdToken($idToken, $this->tenantId, $ttl, $this->clock));
+            ->handle(CreateSessionCookie::forIdToken($idToken, $this->tenantId, $ttl, $this->clock))
+        ;
     }
 
     public function getEmailActionLink(string $type, string $email, ActionCodeSettings $actionCodeSettings, ?string $locale = null): string
     {
         return (new CreateActionLink\GuzzleApiClientHandler($this->client, $this->projectId))
-            ->handle(CreateActionLink::new($type, $email, $actionCodeSettings, $this->tenantId, $locale));
+            ->handle(CreateActionLink::new($type, $email, $actionCodeSettings, $this->tenantId, $locale))
+        ;
     }
 
     /**

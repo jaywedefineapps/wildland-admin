@@ -19,8 +19,10 @@ use function is_string;
  */
 final class RegistrationTokens implements Countable, IteratorAggregate
 {
-    /** @var list<RegistrationToken> */
-    private array $tokens;
+    /**
+     * @var list<RegistrationToken>
+     */
+    private readonly array $tokens;
 
     /**
      * @internal
@@ -31,7 +33,7 @@ final class RegistrationTokens implements Countable, IteratorAggregate
     }
 
     /**
-     * @param RegistrationTokens|RegistrationToken|list<RegistrationToken|string>|non-empty-string $values
+     * @param RegistrationTokens|RegistrationToken|array<RegistrationToken|string>|non-empty-string $values
      *
      * @throws InvalidArgument
      */
@@ -49,7 +51,7 @@ final class RegistrationTokens implements Countable, IteratorAggregate
             foreach ($values as $value) {
                 if ($value instanceof RegistrationToken) {
                     $tokens[] = $value;
-                } elseif (is_string($value) && $value !== '') { // @phpstan-ignore-line
+                } elseif ($value !== '') {
                     $tokens[] = RegistrationToken::fromValue($value);
                 }
             }
@@ -63,8 +65,6 @@ final class RegistrationTokens implements Countable, IteratorAggregate
     }
 
     /**
-     * @codeCoverageIgnore
-     *
      * @return Traversable<RegistrationToken>
      */
     public function getIterator(): Traversable

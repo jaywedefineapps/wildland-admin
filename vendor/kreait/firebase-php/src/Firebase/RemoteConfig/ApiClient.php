@@ -19,23 +19,27 @@ use function array_filter;
  */
 class ApiClient
 {
-    private ClientInterface $client;
-    private RemoteConfigApiExceptionConverter $errorHandler;
-    private string $baseUri;
+    private readonly RemoteConfigApiExceptionConverter $errorHandler;
+    private readonly string $baseUri;
 
-    public function __construct(string $projectId, ClientInterface $client)
+    public function __construct(string $projectId, private readonly ClientInterface $client)
     {
-        $this->client = $client;
         $this->baseUri = "https://firebaseremoteconfig.googleapis.com/v1/projects/{$projectId}/remoteConfig";
         $this->errorHandler = new RemoteConfigApiExceptionConverter();
     }
 
     /**
+     * @see https://firebase.google.com/docs/reference/remote-config/rest/v1/projects/getRemoteConfig
+     *
      * @throws RemoteConfigException
      */
-    public function getTemplate(): ResponseInterface
+    public function getTemplate(VersionNumber|int|string $versionNumber = null): ResponseInterface
     {
-        return $this->requestApi('GET', 'remoteConfig');
+        return $this->requestApi('GET', 'remoteConfig', [
+            'query' => array_filter([
+                'version_number' => (string) $versionNumber,
+            ]),
+        ]);
     }
 
     /**

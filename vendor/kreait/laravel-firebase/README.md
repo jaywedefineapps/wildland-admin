@@ -9,12 +9,23 @@ A Laravel package for the [Firebase PHP Admin SDK](https://github.com/kreait/fir
 [![codecov](https://codecov.io/gh/kreait/laravel-firebase/branch/main/graph/badge.svg)](https://codecov.io/gh/kreait/laravel-firebase)
 [![Sponsor](https://img.shields.io/static/v1?logo=GitHub&label=Sponsor&message=%E2%9D%A4&color=ff69b4)](https://github.com/sponsors/jeromegamez)
 
+---
+
+## The future of the Firebase Admin PHP SDK
+
+Please read about the future of the Firebase Admin PHP SDK on the
+[SDK's GitHub Repository](https://github.com/kreait/firebase-php).
+
+---
+
 - [Installation](#installation)
   - [Laravel](#laravel)
 - [Configuration](#configuration)
+  - [Credentials with JSON files](#credentials-with-json-files)
+  - [Credentials with Arrays](#credentials-with-arrays)
 - [Usage](#usage)
   - [Multiple projects](#multiple-projects)
-- [Support](#support)
+- [Supported Versions](#supported-versions)
 - [License](#license)
 
 ## Installation
@@ -27,12 +38,6 @@ composer require kreait/laravel-firebase
 
 In order to access a Firebase project and its related services using a server SDK, requests must be authenticated.
 For server-to-server communication this is done with a Service Account.
-
-The package uses auto discovery for the default project to find the credentials needed for authenticating requests to
-the Firebase APIs by inspecting certain environment variables and looking into Google's well known path(s).
-
-If you don't want a service account to be auto-discovered, provide it by setting the `GOOGLE_APPLICATION_CREDENTIALS`
-environment variable or by adapting the package configuration.
 
 If you don't already have generated a Service Account, you can do so by following the instructions from the
 official documentation pages at https://firebase.google.com/docs/admin/setup#initialize_the_sdk.
@@ -55,18 +60,38 @@ by copying it to your local `config` directory or by defining the environment va
 php artisan vendor:publish --provider="Kreait\Laravel\Firebase\ServiceProvider" --tag=config
 ```
 
-## Usage
+### Credentials with JSON files
 
-| Component                                                                                             | [Container Injection](https://laravel.com/docs/container#automatic-injection) | [Facades](https://laravel.com/docs/facades) | [`app()`](https://laravel.com/docs/helpers#method-app) |
-|-------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|---------------------------------------------|--------------------------------------------------------|
-| [AppCheck](https://firebase-php.readthedocs.io/en/stable/app-check.html)                              | `\Kreait\Firebase\Contract\AppCheck`                                          | `Firebase::appCheck()`                      | `app('firebase.app_check')`                            |
-| [Authentication](https://firebase-php.readthedocs.io/en/stable/authentication.html)                   | `\Kreait\Firebase\Contract\Auth`                                              | `Firebase::auth()`                          | `app('firebase.auth')`                                 |
-| [Cloud Firestore](https://firebase-php.readthedocs.io/en/stable/cloud-firestore.html)                 | `\Kreait\Firebase\Contract\Firestore`                                         | `Firebase::firestore()`                     | `app('firebase.firestore')`                            |
-| [Cloud&nbsp;Messaging&nbsp;(FCM)](https://firebase-php.readthedocs.io/en/stable/cloud-messaging.html) | `\Kreait\Firebase\Contract\Messaging`                                         | `Firebase::messaging()`                     | `app('firebase.messaging')`                            |
-| [Dynamic&nbsp;Links](https://firebase-php.readthedocs.io/en/stable/dynamic-links.html)                | `\Kreait\Firebase\Contract\DynamicLinks`                                      | `Firebase::dynamicLinks()`                  | `app('firebase.dynamic_links')`                        |
-| [Realtime Database](https://firebase-php.readthedocs.io/en/stable/realtime-database.html)             | `\Kreait\Firebase\Contract\Database`                                          | `Firebase::database()`                      | `app('firebase.database')`                             |
-| [Remote Config](https://firebase-php.readthedocs.io/en/stable/remote-config.html)                     | `\Kreait\Firebase\Contract\RemoteConfig`                                      | `Firebase::remoteConfig()`                  | `app('firebase.remote_config')`                        |
-| [Cloud Storage](https://firebase-php.readthedocs.io/en/stable/cloud-storage.html)                     | `\Kreait\Firebase\Contract\Storage`                                           | `Firebase::storage()`                       | `app('firebase.storage')`                              |
+The package uses auto discovery for the default project to find the credentials needed for authenticating requests to
+the Firebase APIs by inspecting certain environment variables and looking into Google's well known path(s).
+
+If you don't want a service account to be auto-discovered, provide it by setting the `FIREBASE_CREDENTIALS` or `GOOGLE_APPLICATION_CREDENTIALS` environment variable or by adapting the package configuration, like so for example:
+
+```.env
+FIREBASE_CREDENTIALS=storage/app/firebase-auth.json
+```
+
+### Credentials with Arrays
+
+If you prefer to have more control over the configuration items required to configure the credentials, you can also transpose the Service Account JSON file as an array within your `config/firebase.php` file.
+
+```php
+'credentials' => [
+    'type' => 'service_account',
+    'project_id' => 'some-project-123',
+    'private_key_id' => '123456789',
+    'private_key' => '-----BEGIN PRIVATE KEY-----\nFOO_BAR_123456789\n-----END PRIVATE KEY-----\n',
+    'client_email' => 'firebase-adminsdk-cwiuo@some-project-123.iam.gserviceaccount.com',
+    'client_id' => '123456789',
+    'auth_uri' => 'https://accounts.google.com/o/oauth2/auth',
+    'token_uri' => 'https://oauth2.googleapis.com/token',
+    'auth_provider_x509_cert_url' => 'https://www.googleapis.com/oauth2/v1/certs',
+    'client_x509_cert_url' => 'https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-cwiuo%40some-project-123.iam.gserviceaccount.com',
+    'universe_domain' => 'googleapis.com',
+],
+```
+
+## Usage
 
 Once you have retrieved a component, please refer to the [documentation of the Firebase PHP Admin SDK](https://firebase-php.readthedocs.io)
 for further information on how to use it.
@@ -90,15 +115,20 @@ $appAuth = Firebase::project('app')->auth();
 $anotherAppAuth = Firebase::project('another-app')->auth();
 ```
 
-## Support
+## Supported Versions
 
-- [Issue Tracker (Laravel Package)](https://github.com/kreait/laravel-firebase/issues/)
-- [Issue Tracker (Admin SDK)](https://github.com/kreait/firebase-php/issues/)
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/firebase+php)
+**Only the latest version is actively supported.**
 
-_If you or your team rely on this project and me maintaining it, please consider becoming a
-[Sponsor](https://github.com/sponsors/jeromegamez/) 🙏. Higher tiers enable access to extended
-support._
+Earlier versions will receive security fixes as long as their **lowest** SDK requirement receives security fixes. You
+can find the currently supported versions and support options in the [SDK's README](https://github.com/kreait/firebase-php).
+
+| Version | Initial Release | Supported SDK Versions | Supported Laravel Versions | Status      |
+|---------|-----------------|------------------------|----------------------------|-------------|
+| `5.x`   | 13 Jan 2023     | `^7.0`                 | `^9.0`, `^10.0`            | Active      |
+| `4.x`   | 09 Jan 2022     | `^6.0`                 | `^8.0`                     | End of life |
+| `3.x`   | 01 Nov 2020     | `^5.24`                | `^6.0, ^7.0, ^8.0`         | End of life |
+| `2.x`   | 01 Apr 2020     | `^5.0`                 | `^5.8, ^6.0, ^7.0, ^8.0`   | End of life |
+| `1.x`   | 17 Aug 2019     | `^4.40.1`              | `^5.8, ^6.0, ^7.0`         | End of life |
 
 ## License
 

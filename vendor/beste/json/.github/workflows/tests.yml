@@ -2,31 +2,39 @@ name: Tests
 
 on:
   pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/tests.yml'
+      - 'composer.json'
   push:
-    branches:
-      - 'main'
+    branches: ['main']
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/tests.yml'
+      - 'composer.json'
+  workflow_dispatch:
 
 jobs:
   tests:
     name: PHP ${{ matrix.php }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
         php:
           - "8.1"
           - "8.2"
-        dependencies:
-          - "lowest"
-          - "highest"
+          - "8.3"
 
     env:
-      extensions: ctype, dom, intl, json, mbstring, openssl, xml, zip, zlib
-      key: "cache-${{ matrix.php }}-${{ matrix.dependencies }}-v1" # can be any string, change to clear the extension cache.
+      extensions: json
+      key: "cache-${{ matrix.php }}-${{ matrix.dependencies }}-v2" # can be any string, change to clear the extension cache.
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup cache environment
         id: extcache
@@ -54,24 +62,14 @@ jobs:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: "ramsey/composer-install@v2"
-        with:
-          dependency-versions: "${{ matrix.dependencies }}"
-          composer-options: "${{ matrix.composer-options }}"
 
-      - name: Install tools
-        run: composer install-tools
-
-      - name: Setup problem matchers for PHP
-        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+      - name: Setup Problem Matchers
+        run: |
+          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
       - name: Run PHPStan
-        run: composer phpstan
-
-      - name: Run Psalm
-        run: composer psalm -- --output-format=github
-
-      - name: Setup Problem Matchers for PHPUnit
-        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+        run: vendor/bin/phpstan
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit --testdox --coverage-text

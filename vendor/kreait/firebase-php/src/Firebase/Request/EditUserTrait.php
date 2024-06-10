@@ -16,8 +16,6 @@ use function mb_strtolower;
 use function preg_replace;
 
 /**
- * @codeCoverageIgnore
- *
  * @template T
  */
 trait EditUserTrait
@@ -162,7 +160,7 @@ trait EditUserTrait
             'phoneNumber' => $this->phoneNumber,
             'photoUrl' => $this->photoUrl,
             'password' => $this->clearTextPassword,
-        ], static fn ($value) => $value !== null);
+        ], static fn($value) => $value !== null);
     }
 
     public function hasUid(): bool

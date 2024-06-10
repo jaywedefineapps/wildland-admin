@@ -24,13 +24,19 @@ final class UpdateUser implements Request
     public const PHOTO_URL = 'PHOTO_URL';
     public const EMAIL = 'EMAIL';
 
-    /** @var array<string> */
+    /**
+     * @var array<string>
+     */
     private array $attributesToDelete = [];
 
-    /** @var string[] */
+    /**
+     * @var string[]
+     */
     private array $providersToDelete = [];
 
-    /** @var array<string, mixed>|null */
+    /**
+     * @var array<string, mixed>|null
+     */
     private ?array $customAttributes = null;
 
     private function __construct()
@@ -76,7 +82,11 @@ final class UpdateUser implements Request
                 case 'deleteattribute':
                 case 'deleteattributes':
                     foreach ((array) $value as $deleteAttribute) {
-                        if (!is_string($deleteAttribute) || $deleteAttribute === '') {
+                        if (!is_string($deleteAttribute)) {
+                            continue;
+                        }
+
+                        if ($deleteAttribute === '') {
                             continue;
                         }
 
@@ -135,7 +145,7 @@ final class UpdateUser implements Request
                 case 'removeproviders':
                     $request = array_reduce(
                         (array) $value,
-                        static fn (self $request, $provider) => $request->withRemovedProvider($provider),
+                        static fn(self $request, $provider) => $request->withRemovedProvider($provider),
                         $request,
                     );
 

@@ -29,7 +29,7 @@ class FirebaseProjectManager
     {
         $name = $name ?? $this->getDefaultProject();
 
-        if (!isset($this->projects[$name])) {
+        if (! isset($this->projects[$name])) {
             $this->projects[$name] = $this->configure($name);
         }
 
@@ -38,22 +38,22 @@ class FirebaseProjectManager
 
     protected function configuration(string $name): array
     {
-        $config = $this->app->config->get('firebase.projects.' . $name);
+        $config = $this->app->config->get('firebase.projects.'.$name);
 
-        if (!$config) {
+        if (! $config) {
             throw new InvalidArgumentException("Firebase project [{$name}] not configured.");
         }
 
         return $config;
     }
 
-    protected function resolveCredentials(string $credentials): string
+    protected function resolveJsonCredentials(string $credentials): string
     {
         $isJsonString = \str_starts_with($credentials, '{');
         $isAbsoluteLinuxPath = \str_starts_with($credentials, '/');
         $isAbsoluteWindowsPath = \str_contains($credentials, ':\\');
 
-        $isRelativePath = !$isJsonString && !$isAbsoluteLinuxPath && !$isAbsoluteWindowsPath;
+        $isRelativePath = ! $isJsonString && ! $isAbsoluteLinuxPath && ! $isAbsoluteWindowsPath;
 
         return $isRelativePath ? $this->app->basePath($credentials) : $credentials;
     }
@@ -68,10 +68,12 @@ class FirebaseProjectManager
             $factory = $factory->withTenantId($tenantId);
         }
 
-        if ($credentials = $config['credentials']['file'] ?? null) {
-            $resolvedCredentials = $this->resolveCredentials((string) $credentials);
+        if ($credentials = $config['credentials']['file'] ?? ($config['credentials'] ?? null)) {
+            if (is_string($credentials)) {
+                $credentials = $this->resolveJsonCredentials($credentials);
+            }
 
-            $factory = $factory->withServiceAccount($resolvedCredentials);
+            $factory = $factory->withServiceAccount($credentials);
         }
 
         if ($databaseUrl = $config['database']['url'] ?? null) {
@@ -80,6 +82,10 @@ class FirebaseProjectManager
 
         if ($authVariableOverride = $config['database']['auth_variable_override'] ?? null) {
             $factory = $factory->withDatabaseAuthVariableOverride($authVariableOverride);
+        }
+
+        if ($firestoreDatabase = $config['firestore']['database'] ?? null) {
+            $factory = $factory->withFirestoreDatabase($firestoreDatabase);
         }
 
         if ($defaultStorageBucket = $config['storage']['default_bucket'] ?? null) {
@@ -97,8 +103,7 @@ class FirebaseProjectManager
 
             $factory = $factory
                 ->withVerifierCache($cache)
-                ->withAuthTokenCache($cache)
-            ;
+                ->withAuthTokenCache($cache);
         }
 
         if ($logChannel = $config['logging']['http_log_channel'] ?? null) {
@@ -121,6 +126,10 @@ class FirebaseProjectManager
 
         if ($timeout = $config['http_client_options']['timeout'] ?? null) {
             $options = $options->withTimeOut((float) $timeout);
+        }
+
+        if ($middlewares = $config['http_client_options']['guzzle_middlewares'] ?? null) {
+            $options = $options->withGuzzleMiddlewares($middlewares);
         }
 
         $factory = $factory->withHttpClientOptions($options);

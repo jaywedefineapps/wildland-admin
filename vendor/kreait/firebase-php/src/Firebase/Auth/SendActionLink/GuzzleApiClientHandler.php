@@ -6,22 +6,22 @@ namespace Kreait\Firebase\Auth\SendActionLink;
 
 use Beste\Json;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use Kreait\Firebase\Auth\ProjectAwareAuthResourceUrlBuilder;
 use Kreait\Firebase\Auth\SendActionLink;
 use Kreait\Firebase\Auth\TenantAwareAuthResourceUrlBuilder;
+use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 
-use const JSON_FORCE_OBJECT;
-
 use function array_filter;
+
+use const JSON_FORCE_OBJECT;
 
 /**
  * @internal
  */
-final class GuzzleApiClientHandler implements Handler
+final class GuzzleApiClientHandler
 {
     /**
      * @param non-empty-string $projectId
@@ -38,7 +38,7 @@ final class GuzzleApiClientHandler implements Handler
 
         try {
             $response = $this->client->send($request, ['http_errors' => false]);
-        } catch (GuzzleException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new FailedToSendActionLink('Failed to send action link: '.$e->getMessage(), $e->getCode(), $e);
         }
 

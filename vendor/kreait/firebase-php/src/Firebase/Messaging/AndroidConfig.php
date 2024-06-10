@@ -93,15 +93,11 @@ final class AndroidConfig implements JsonSerializable
     private const NOTIFICATION_VISIBILITY_PUBLIC = 'PUBLIC';
     private const NOTIFICATION_VISIBILITY_SECRET = 'SECRET';
 
-    /** @var AndroidConfigShape */
-    private array $config;
-
     /**
      * @param AndroidConfigShape $config
      */
-    private function __construct(array $config)
+    private function __construct(private array $config)
     {
-        $this->config = $config;
     }
 
     public static function new(): self
@@ -238,7 +234,7 @@ final class AndroidConfig implements JsonSerializable
 
     public function jsonSerialize(): array
     {
-        return array_filter($this->config, static fn ($value) => $value !== null && $value !== []);
+        return array_filter($this->config, static fn($value) => $value !== null && $value !== []);
     }
 
     /**

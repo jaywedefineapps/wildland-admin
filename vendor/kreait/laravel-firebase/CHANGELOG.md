@@ -2,6 +2,32 @@
 
 ## Unreleased
 
+* Added support for Laravel 11 
+  ([#214](https://github.com/kreait/laravel-firebase/pull/214))
+
+## 5.7.0 - 2024-02-19
+
+* Enabled using `symfony/cache:^7`
+
+## 5.6.0 - 2024-01-13
+
+* Added support for overriding the name of the Firestore Default Database
+  ([#209](https://github.com/kreait/laravel-firebase/pull/209))
+
+## 5.5.0 - 2023-11-30
+
+* Added support for PHP 8.3
+
+## 5.4.0 - 2023-10-05
+
+* Added support for configuration of credentials with a config array
+  ([#202](https://github.com/kreait/laravel-firebase/pull/202))
+
+## 5.3.0 - 2023-07-26
+
+* Enabled injecting middlewares into the Firebase API client
+  ([#187](https://github.com/kreait/laravel-firebase/pull/187))
+
 ## 5.2.0 - 2023-03-30
 
 * Added AppCheck support

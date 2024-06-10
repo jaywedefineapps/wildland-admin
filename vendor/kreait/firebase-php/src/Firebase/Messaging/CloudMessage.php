@@ -28,7 +28,6 @@ use function implode;
  */
 final class CloudMessage implements Message
 {
-    private MessageTarget $target;
     private MessageData $data;
     private Notification $notification;
     private AndroidConfig $androidConfig;
@@ -37,9 +36,8 @@ final class CloudMessage implements Message
     private FcmOptions $fcmOptions;
 
     private function __construct(
-        MessageTarget $messageTarget,
+        private MessageTarget $target,
     ) {
-        $this->target = $messageTarget;
         $this->data = MessageData::fromArray([]);
         $this->notification = Notification::fromArray([]);
         $this->androidConfig = AndroidConfig::fromArray([]);
@@ -228,6 +226,11 @@ final class CloudMessage implements Message
         return $this->target->type() !== MessageTarget::UNKNOWN;
     }
 
+    public function target(): MessageTarget
+    {
+        return $this->target;
+    }
+
     public function jsonSerialize(): array
     {
         $data = [
@@ -247,16 +250,12 @@ final class CloudMessage implements Message
 
         return array_filter(
             $data,
-            static fn ($value) => $value !== null && $value !== [],
+            static fn($value) => $value !== null && $value !== [],
         );
     }
 
     /**
-     * @param array{
-     *     token?: string,
-     *     topic?: string,
-     *     condition?: string
-     * } $data
+     * @param array<mixed> $data
      */
     private static function determineTargetFromArray(array $data): MessageTarget
     {
