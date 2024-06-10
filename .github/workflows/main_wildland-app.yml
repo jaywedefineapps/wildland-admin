@@ -40,13 +40,6 @@ jobs:
       - name: Generate application key
         run: php artisan key:generate
 
-      - name: Run npm install and build assets
-        run: |
-          npm install
-          npm run prod
-        env:
-          CI: true
-
       - name: Prepare deployment artifact
         run: |
           mkdir -p release
