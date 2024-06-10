@@ -3,6 +3,11 @@
 
 name: Build and deploy PHP app to Azure Web App - wildland-app
 
+env:
+  AZURE_WEBAPP_NAME: WildlandFirebully   # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
+  PHP_VERSION: '8.x'                  # set this to the PHP version to use
+
 on:
   push:
     branches:
