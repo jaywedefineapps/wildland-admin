@@ -43,7 +43,7 @@ jobs:
       - name: Prepare deployment artifact
         run: |
           mkdir release
-          find . -mindepth 1 -maxdepth 1 -not -name release -exec cp -r {} release/ \;
+          cp -r . release/
           cd release
           zip -r ../release.zip ./*
         shell: bash
