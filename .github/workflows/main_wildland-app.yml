@@ -5,7 +5,8 @@ name: Build and deploy PHP app to Azure Web App - wildland-app
 
 on:
   push:
-    branches: [ $default-branch ]
+    branches: 
+      - main
   workflow_dispatch:
 
 env:
