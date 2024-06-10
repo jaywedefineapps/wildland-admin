@@ -43,7 +43,8 @@ jobs:
       - name: Prepare deployment artifact
         run: |
           mkdir release
-          cp -r . release/
+          shopt -s dotglob
+          cp -r !("release") release/
           cd release
           zip -r ../release.zip ./*
         shell: bash
