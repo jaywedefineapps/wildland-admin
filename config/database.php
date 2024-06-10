@@ -58,11 +58,15 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'sslmode' => env('DB_SSLMODE', 'prefer'),
-            'options' => [
-                PDO::MYSQL_ATTR_SSL_CA     => env('DB_SSL_CA'),
-                PDO::MYSQL_ATTR_SSL_CERT   => env('DB_SSL_CERT'),
-                PDO::MYSQL_ATTR_SSL_KEY    => env('DB_SSL_KEY'),
+            'sslmode' => env('DB_SSLMODE', 'require'),
+            // 'options' => [
+            //     PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,
+            //     PDO::MYSQL_ATTR_SSL_CA     => env('DB_SSL_CA'),
+            //     // PDO::MYSQL_ATTR_SSL_CERT   => env('DB_SSL_CERT'),
+            //     // PDO::MYSQL_ATTR_SSL_KEY    => env('DB_SSL_KEY'),
+            // ],
+            'options'   => [
+                PDO::MYSQL_ATTR_SSL_CA => env('DB_SSLCA', ''),
                 PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
             ],
             // 'options' => extension_loaded('pdo_mysql') ? array_filter([
