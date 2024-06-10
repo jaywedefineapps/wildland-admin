@@ -83,7 +83,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
-          app-name: 'Wildland Firebully'
+          app-name: 'wildland-app'
           package: .
 
       - name: Run database migrations
