@@ -43,8 +43,7 @@ jobs:
       - name: Prepare deployment artifact
         run: |
           mkdir release
-          shopt -s dotglob
-          cp -r !(release) release/
+          find . -mindepth 1 -maxdepth 1 ! -name 'release' -exec cp -r {} release/ \;
           cd release
           zip -r ../release.zip ./*
         shell: bash
