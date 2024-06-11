@@ -43,7 +43,10 @@ jobs:
       - name: Prepare deployment artifact
         run: |
           mkdir release
+          # Copy all files and directories except the release directory itself
           find . -mindepth 1 -maxdepth 1 ! -name 'release' -exec cp -r {} release/ \;
+          # Ensure .htaccess is included
+          cp .htaccess release/
           cd release
           zip -r ../release.zip ./*
         shell: bash
