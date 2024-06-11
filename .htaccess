@@ -5,29 +5,28 @@
 
     RewriteEngine On
 
-    # Redirect Trailing Slashes...
-    RewriteRule ^(.*)/$ /$1 [L,R=301]
+    RewriteCond %{HTTPS} !=on
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
 
     # Handle Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 
-    # Ensure Authorization header is passed to PHP
-    RewriteCond %{HTTP:Authorization} .
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
-# <VirtualHost *:80>
-#     ServerAdmin webmaster@localhost
-#     DocumentRoot /home/site/wwwroot/public
-#     ServerName wildland-app.azurewebsites.net
+# STRONG HTACCESS PROTECTION
+<Files ~ "^.*\.([Ee][Nn][Vv])">
+ order allow,deny
+ deny from all
+ satisfy all
+</Files>
 
-#     <Directory /home/site/wwwroot/public>
-#         Options Indexes FollowSymLinks
-#         AllowOverride All
-#         Require all granted
-#     </Directory>
-
-#     ErrorLog ${APACHE_LOG_DIR}/error.log
-#     CustomLog ${APACHE_LOG_DIR}/access.log combined
-# </VirtualHost>
