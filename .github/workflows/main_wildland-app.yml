@@ -47,7 +47,7 @@ jobs:
           cp .htaccess release/
           cp .env release/
           cd release
-          zip -r ../release.zip ./*
+          zip -r ../release.zip ./* ./.htaccess ./.env
         shell: bash
 
       - name: Upload artifact for deployment job
