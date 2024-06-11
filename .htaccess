@@ -17,17 +17,17 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 </IfModule>
-<VirtualHost *:80>
-    ServerAdmin webmaster@localhost
-    DocumentRoot /home/site/wwwroot/public
-    ServerName wildland-app.azurewebsites.net
+# <VirtualHost *:80>
+#     ServerAdmin webmaster@localhost
+#     DocumentRoot /home/site/wwwroot/public
+#     ServerName wildland-app.azurewebsites.net
 
-    <Directory /home/site/wwwroot/public>
-        Options Indexes FollowSymLinks
-        AllowOverride All
-        Require all granted
-    </Directory>
+#     <Directory /home/site/wwwroot/public>
+#         Options Indexes FollowSymLinks
+#         AllowOverride All
+#         Require all granted
+#     </Directory>
 
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
+#     ErrorLog ${APACHE_LOG_DIR}/error.log
+#     CustomLog ${APACHE_LOG_DIR}/access.log combined
+# </VirtualHost>
