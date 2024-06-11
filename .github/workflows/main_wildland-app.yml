@@ -43,10 +43,11 @@ jobs:
           mkdir release
           # Copy all files and directories except the release directory itself
           find . -mindepth 1 -maxdepth 1 ! -name 'release' -exec cp -r {} release/ \;
-          # Ensure .htaccess is included
+          # Ensure .htaccess and .env are included
           cp .htaccess release/
+          cp .env release/
           cd release
-          zip -r ../release.zip ./* ./.htaccess
+          zip -r ../release.zip ./*
         shell: bash
 
       - name: Upload artifact for deployment job
