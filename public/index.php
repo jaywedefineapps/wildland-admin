@@ -53,10 +53,3 @@ $response = $kernel->handle(
 )->send();
 
 $kernel->terminate($request, $response);
-
-// if (strpos($_SERVER['REQUEST_URI'],'index.php') !== FALSE )
-// {
-//     $new_uri = preg_replace('#index\.php\/?#', '', $_SERVER['REQUEST_URI']);
-//     header('Location: '.$new_uri, TRUE, 301);
-//     die();
-// }
