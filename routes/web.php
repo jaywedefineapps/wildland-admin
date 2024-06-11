@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index']);
+    // other admin routes
+});
+
+Route::get('/api', function () {
+    return response()->json(['message' => 'API Route']);
 });
 
 Route::get('/dashboard', function () {
