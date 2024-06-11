@@ -19,13 +19,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::prefix('admin')->group(function () {
-    Route::get('/', [AdminController::class, 'index']);
-    // other admin routes
+Route::get('/test-route', function () {
+    return 'This is a test route';
 });
 
-Route::get('/api', function () {
-    return response()->json(['message' => 'API Route']);
+Route::get('/admin/test', function () {
+    return 'Admin test route';
+});
+
+Route::get('/api/test', function () {
+    return response()->json(['message' => 'API test route']);
 });
 
 Route::get('/dashboard', function () {
