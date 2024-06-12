@@ -5,7 +5,7 @@
 
     RewriteEngine On
 
-    RewriteCond %{HTTPS} !=on
+    # RewriteCond %{HTTPS} !=on
     # This checks to make sure the connection is not already HTTPS
 
     # Handle Authorization Header
