@@ -449,8 +449,8 @@ class ComposerStaticInite813bf851987969d66fd68874188561c
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -502,8 +502,8 @@ class ComposerStaticInite813bf851987969d66fd68874188561c
         ),
         'League\\Uri\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/uri-interfaces',
-            1 => __DIR__ . '/..' . '/league/uri',
+            0 => __DIR__ . '/..' . '/league/uri',
+            1 => __DIR__ . '/..' . '/league/uri-interfaces',
         ),
         'League\\OAuth2\\Server\\' => 
         array (
@@ -1032,6 +1032,8 @@ class ComposerStaticInite813bf851987969d66fd68874188561c
         'Aws\\ApplicationDiscoveryService\\Exception\\ApplicationDiscoveryServiceException' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/ApplicationDiscoveryService/Exception/ApplicationDiscoveryServiceException.php',
         'Aws\\ApplicationInsights\\ApplicationInsightsClient' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/ApplicationInsights/ApplicationInsightsClient.php',
         'Aws\\ApplicationInsights\\Exception\\ApplicationInsightsException' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/ApplicationInsights/Exception/ApplicationInsightsException.php',
+        'Aws\\ApplicationSignals\\ApplicationSignalsClient' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/ApplicationSignals/ApplicationSignalsClient.php',
+        'Aws\\ApplicationSignals\\Exception\\ApplicationSignalsException' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/ApplicationSignals/Exception/ApplicationSignalsException.php',
         'Aws\\Appstream\\AppstreamClient' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Appstream/AppstreamClient.php',
         'Aws\\Appstream\\Exception\\AppstreamException' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Appstream/Exception/AppstreamException.php',
         'Aws\\Arn\\AccessPointArn' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Arn/AccessPointArn.php',
@@ -1689,6 +1691,8 @@ class ComposerStaticInite813bf851987969d66fd68874188561c
         'Aws\\PaymentCryptography\\PaymentCryptographyClient' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/PaymentCryptography/PaymentCryptographyClient.php',
         'Aws\\PcaConnectorAd\\Exception\\PcaConnectorAdException' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/PcaConnectorAd/Exception/PcaConnectorAdException.php',
         'Aws\\PcaConnectorAd\\PcaConnectorAdClient' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/PcaConnectorAd/PcaConnectorAdClient.php',
+        'Aws\\PcaConnectorScep\\Exception\\PcaConnectorScepException' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/PcaConnectorScep/Exception/PcaConnectorScepException.php',
+        'Aws\\PcaConnectorScep\\PcaConnectorScepClient' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/PcaConnectorScep/PcaConnectorScepClient.php',
         'Aws\\PersonalizeEvents\\Exception\\PersonalizeEventsException' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/PersonalizeEvents/Exception/PersonalizeEventsException.php',
         'Aws\\PersonalizeEvents\\PersonalizeEventsClient' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/PersonalizeEvents/PersonalizeEventsClient.php',
         'Aws\\PersonalizeRuntime\\Exception\\PersonalizeRuntimeException' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/PersonalizeRuntime/Exception/PersonalizeRuntimeException.php',

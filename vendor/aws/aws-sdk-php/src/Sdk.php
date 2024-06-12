@@ -52,6 +52,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionApplicationDiscoveryService(array $args = [])
  * @method \Aws\ApplicationInsights\ApplicationInsightsClient createApplicationInsights(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionApplicationInsights(array $args = [])
+ * @method \Aws\ApplicationSignals\ApplicationSignalsClient createApplicationSignals(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionApplicationSignals(array $args = [])
  * @method \Aws\Appstream\AppstreamClient createAppstream(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionAppstream(array $args = [])
  * @method \Aws\Artifact\ArtifactClient createArtifact(array $args = [])
@@ -538,6 +540,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionPaymentCryptographyData(array $args = [])
  * @method \Aws\PcaConnectorAd\PcaConnectorAdClient createPcaConnectorAd(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionPcaConnectorAd(array $args = [])
+ * @method \Aws\PcaConnectorScep\PcaConnectorScepClient createPcaConnectorScep(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionPcaConnectorScep(array $args = [])
  * @method \Aws\Personalize\PersonalizeClient createPersonalize(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionPersonalize(array $args = [])
  * @method \Aws\PersonalizeEvents\PersonalizeEventsClient createPersonalizeEvents(array $args = [])
@@ -771,7 +775,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.311.2';
+    const VERSION = '3.313.0';
 
     /** @var array Arguments for creating clients */
     private $args;
