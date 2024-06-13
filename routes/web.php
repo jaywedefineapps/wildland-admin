@@ -19,18 +19,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test-route', function () {
-    return 'This is a test route';
-});
-
-Route::get('/admin/test', function () {
-    return 'Admin test route';
-});
-
-Route::get('/api/test', function () {
-    return response()->json(['message' => 'API test route']);
-});
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
