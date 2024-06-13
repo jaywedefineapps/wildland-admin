@@ -107,6 +107,7 @@ jobs:
       - name: Update Nginx Configuration or Restart Nginx
         run: |
           # Example command to update Nginx configuration (replace with your actual command)
-          sudo cp nginx.conf /etc/nginx/sites-available/default
+          cp nginx.conf /etc/nginx/sites-available/default
           # Example command to restart Nginx
-          sudo systemctl restart nginx
+          systemctl restart nginx
+          echo "Nginx configuration updated and Nginx restarted successfully"
