@@ -104,10 +104,20 @@ jobs:
         env:
           AZURE_HTTP_USER_AGENT: 'GitHubActions'
 
-      - name: Update Nginx Configuration or Restart Nginx
-        run: |
-          # Example command to update Nginx configuration (replace with your actual command)
-          cp nginx.conf /etc/nginx/sites-available/default
-          # Example command to restart Nginx
-          systemctl restart nginx
-          echo "Nginx configuration updated and Nginx restarted successfully"
+      # - name: Update Nginx Configuration or Restart Nginx
+      #   run: |
+      #     # Example command to update Nginx configuration (replace with your actual command)
+      #     cp nginx.conf /etc/nginx/sites-available/default
+      #     # Example command to restart Nginx
+      #     systemctl restart nginx
+      #     echo "Nginx configuration updated and Nginx restarted successfully"
+
+      - name: SSH and Update Nginx Configuration
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo cp /path/to/custom/nginx.conf /etc/nginx/sites-available/default
+            sudo systemctl restart nginx
