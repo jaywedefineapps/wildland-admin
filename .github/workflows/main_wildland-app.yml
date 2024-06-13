@@ -104,19 +104,3 @@ jobs:
         env:
           AZURE_HTTP_USER_AGENT: 'GitHubActions'
 
-      # - name: Update Nginx Configuration or Restart Nginx
-      #   run: |
-      #     # Example command to update Nginx configuration (replace with your actual command)
-      #     cp nginx.conf /etc/nginx/sites-available/default
-      #     # Example command to restart Nginx
-      #     systemctl restart nginx
-      #     echo "Nginx configuration updated and Nginx restarted successfully"
-
-      - name: Install Azure CLI
-        uses: azure/CLI@v1
-
-      - name: Update Nginx Configuration via Azure CLI
-        run: |
-          az login --service-principal -u ${{ secrets.AZUREAPP_CLIENT_ID }} -p ${{ secrets.AZUREAPP_CLIENT_SECRET }} --tenant ${{ secrets.AZUREAPP_TENANT_ID }}
-          az webapp ssh --name 'wildland-app' --resource-group 'wildlandResourceGroup' --command "sudo cp nginx.conf /etc/nginx/sites-available/default && sudo systemctl restart nginx"
-
