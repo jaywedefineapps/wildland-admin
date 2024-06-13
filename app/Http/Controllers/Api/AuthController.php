@@ -114,8 +114,6 @@ class AuthController extends Controller
             $this->userFirebaseService->deletFcm($request->firebaseToken);
 
             $token = auth()->user()->createToken('Token')->accessToken;
-            echo $token;
-            die();
 
             $user = auth()->user();
             $response['token'] = $token;
