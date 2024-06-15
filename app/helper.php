@@ -13,17 +13,17 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
-
-function getAzureImg($key) {
-    if (Storage::disk('azure')->exists($key)) {
-        $expiry = now()->addMinutes(20);
-        $presignedUrl = Storage::disk('azure')->temporaryUrl($key, $expiry);
-        return $presignedUrl;
-    } else {
-        return null;
+if (!function_exists('getAzureImg')) {
+    function getAzureImg($key) {
+        if (Storage::disk('azure')->exists($key)) {
+            $expiry = now()->addMinutes(20);
+            $presignedUrl = Storage::disk('azure')->temporaryUrl($key, $expiry);
+            return $presignedUrl;
+        } else {
+            return null;
+        }
     }
 }
-
 function get_row_by_id($id, $tblname, $colname){
     return DB::table($tblname)->where($colname,$id)->first();
  }
