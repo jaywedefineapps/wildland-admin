@@ -103,7 +103,7 @@ Route::middleware('auth:api')->group(function () {
     });
     Route::controller(UserValveController::class)->group(function () {
         Route::post('/creteValveKey', 'create');
-        Route::post('/getValvByAddress', 'getValvByAddress');
+        Route::post('/getValvByAddress', 'getValvByAddressId');
     });
     Route::controller(TechnicianRequestController::class)->group(function () {
         Route::post('/getTechnicianRequestListByType', 'getListByType');

@@ -27,7 +27,7 @@ class UserValveController extends Controller
         return response()->json(['status' => 1,'message' => trans('message.SUCCESS')], 200);
     }
 
-    public function getValvByAddress(Request $request){
+    public function getValvByAddressId(Request $request){
         $validator = Validator::make($request->all(),[
             'addressId' => 'required',
         ]);
