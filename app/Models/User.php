@@ -76,12 +76,4 @@ class User extends Authenticatable
             return null;
         }
     }
-    // public function getProfileImageAttribute()
-    // {
-    //     if ($this->image) {
-    //         return asset('assets/user_profile/'.$this->image);
-    //     } else {
-    //         return null;
-    //     }
-    // }
 }
