@@ -215,6 +215,7 @@
             <!--begin::Form-->
             <form class="form" id="kt_modal_add_address_form" enctype="multipart/form-data">
                 @csrf
+                <input type="hidden" name="user_id" value="{{request()->id}}">
                 <!--begin::Modal header-->
                 <div class="modal-header" id="kt_modal_add_address_header">
                     <!--begin::Modal title-->
@@ -557,7 +558,7 @@
                     if(data == 1) {
                         $('#kt_modal_add_address').modal('toggle');
                         swal.fire({
-                            text: "Form has been successfully submitted!",
+                            text: "Address has been successfully submitted!",
                             icon: "success",
                             buttonsStyling: !1,
                             confirmButtonText: "Ok, got It!",
