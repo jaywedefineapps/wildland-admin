@@ -24,6 +24,12 @@ class CameraScreenshotService {
     public function update($id,$data) {
         return $this->cameraScreenshot->where('id',$id)->update($data);
     }
+    public function delete($id) {
+        return $this->cameraScreenshot->find($id)->delete();
+    }
+    public function deleteByCameraId($id) {
+        return $this->cameraScreenshot->where('camera_id',$id)->delete();
+    }
 
 }
 

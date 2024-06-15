@@ -13,23 +13,22 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
-
-function getS3Img($key) {
-    $client = Storage::disk('s3')->getClient();
-    $bucket = 'forealdating';
-
-    $command = $client->getCommand('GetObject', [
-        'Bucket' => $bucket,
-        'Key' => $key
-    ]);
-    $request = $client->createPresignedRequest($command, '+20 minutes');
-    $presignedUrl = (string)$request->getUri();
-    return $presignedUrl;
+if (!function_exists('getAzureImg')) {
+    function getAzureImg($key) {
+        if (Storage::disk('azure')->exists($key)) {
+            $expiry = now()->addMinutes(20);
+            $presignedUrl = Storage::disk('azure')->temporaryUrl($key, $expiry);
+            return $presignedUrl;
+        } else {
+            return null;
+        }
+    }
 }
-
-function get_row_by_id($id, $tblname, $colname){
-    return DB::table($tblname)->where($colname,$id)->first();
- }
+if (!function_exists('getAzureImg')) {
+    function get_row_by_id($id, $tblname, $colname){
+        return DB::table($tblname)->where($colname,$id)->first();
+    }
+}
 
 function generateRandomString($length = 25) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -67,6 +66,27 @@ if (!function_exists('mediaUpload')) {
     }
 }
 
+if (!function_exists('mediaUploadAzure')) {
+    function mediaUploadAzure($path, $file, $type = 'file') {
+        $path = rtrim($path, '/');
+
+        if ($type === 'base64') {
+            // Handle Base64 image
+            $img_extension = 'png'; // Default extension for Base64 images
+            $filename = time() . generateRandomString(6) . '.' . $img_extension;
+            $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $file));
+            $filePath = $path . '/' . $filename;
+            Storage::disk('azure')->put($filePath, $fileData, 'private');
+        } else {
+            $img_extension = $file->getClientOriginalExtension();
+            $filename = time() . generateRandomString(6) . '.' . $img_extension;
+            $filePath = $path . '/' . $filename;
+            Storage::disk('azure')->put($filePath, file_get_contents($file), 'private');
+        }
+
+        return $filePath;
+    }
+}
 if (!function_exists('unlinkFile')) {
     function unlinkFile($filePath) {
         $fullPath = public_path($filePath);

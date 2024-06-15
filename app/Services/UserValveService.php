@@ -18,6 +18,9 @@ class UserValveService
     public function getByUserId($id) {
         return $this->userValve->where('user_id',$id)->first();
     }
+    public function getByAddressId($id) {
+        return $this->userValve->where('address_id',$id)->first();
+    }
     public function getByUserIds($id) {
         return $this->userValve->where('user_id',$id)->with('addressData')->paginate();
     }

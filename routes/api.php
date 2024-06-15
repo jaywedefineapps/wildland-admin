@@ -87,6 +87,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/createCamera', 'createCamera');
         Route::post('/listUserCameras', 'list');
         Route::post('/listCamerasByUserId', 'listByUserId');
+        Route::post('/listCamerasByAddressId', 'listByAddressId');
         Route::post('/deleteCamera', 'delete');
         Route::post('/cameraDetails', 'details');
         Route::post('/checkCameraExist', 'checkCameraExist');
@@ -102,6 +103,7 @@ Route::middleware('auth:api')->group(function () {
     });
     Route::controller(UserValveController::class)->group(function () {
         Route::post('/creteValveKey', 'create');
+        Route::post('/getValvByAddress', 'getValvByAddressId');
     });
     Route::controller(TechnicianRequestController::class)->group(function () {
         Route::post('/getTechnicianRequestListByType', 'getListByType');

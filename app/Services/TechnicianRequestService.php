@@ -13,8 +13,8 @@ class TechnicianRequestService
     public function getListByType($status){
         return $this->request->where('status',$status)->with('user')->with('technician')->paginate();
     }
-    public function getListType($status){
-        return $this->request->where('status',$status)->with('user:name,id,address,zipcode')->with('address')->paginate();
+    public function getListType($status,$id){
+        return $this->request->where('status',$status)->where('technician_id',$id)->with('user:name,id,address,zipcode')->with('address')->paginate();
     }
     public function create($data) {
         return $this->request->create($data);

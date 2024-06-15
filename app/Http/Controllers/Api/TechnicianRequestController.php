@@ -27,7 +27,7 @@ class TechnicianRequestController extends Controller
         if($validator->fails()) {
             return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
         }
-        $response = $this->technicianRequestServie->getListType($request->type);
+        $response = $this->technicianRequestServie->getListType($request->type,auth()->user()->id);
         return response()->json(['status' => 1,'message' => trans('message.SUCCESS'),'response' => $response->getCollection()], 200);
     }
 
