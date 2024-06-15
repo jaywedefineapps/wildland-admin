@@ -30,8 +30,8 @@ class AdminController extends Controller
                 ->pluck('type')
                 ->toArray();
             dump($data['roleAccesses']);
-            dd(Session::put(['roleAccesses' => $data['roleAccesses']]));
-            
+            Session::put(['roleAccesses' => $data['roleAccesses']]);
+            dd(Session::get('roleAccesses'));
             return redirect()->route('admin.dashboard')->with('success', 'Admin Login Successfully');
         } else {
             dd('not login');
