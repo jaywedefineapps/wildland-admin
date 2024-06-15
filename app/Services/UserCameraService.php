@@ -31,6 +31,9 @@ class UserCameraService
     public function getByUserId($id) {
         return $this->userCamera->where('user_id',$id)->with('cameraScreenshots')->with('address')->latest()->first();
     }
+    public function getByAddressId($Uid,$id) {
+        return $this->userCamera->where('address_id',$id)->where('user_id',$Uid)->with('cameraScreenshots')->with('address')->latest()->first();
+    }
     public function getByUserIdPaginate($id) {
         return $this->userCamera->where('user_id',$id)->with('cameraScreenshots')->with('address')->paginate();
     }

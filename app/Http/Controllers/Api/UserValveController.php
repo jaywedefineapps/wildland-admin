@@ -27,4 +27,15 @@ class UserValveController extends Controller
         return response()->json(['status' => 1,'message' => trans('message.SUCCESS')], 200);
     }
 
+    public function getValvByAddress(Request $request){
+        $validator = Validator::make($request->all(),[
+            'addressId' => 'required',
+        ]);
+        if($validator->fails()) {
+            return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
+        }
+        $response =  $this->userValveService->getByAddressId($request->addressId);
+        return response()->json(['status' => 1,'message' => trans('message.SUCCESS'),'response'=>$response], 200);
+    }
+
 }

@@ -6,15 +6,20 @@ use Illuminate\Http\Request;
 use App\Services\UserService;
 use App\Services\UserCameraService;
 use App\Http\Controllers\Controller;
+use App\Services\CameraScreenshotService;
 
 class UserCameraController extends Controller
 {
     private $userService;
     private $userCameraService;
-    public function __construct(UserService $userService,UserCameraService $userCameraService)
+    private $camerassService;
+
+    public function __construct(UserService $userService,UserCameraService $userCameraService,CameraScreenshotService $camerassService)
     {
         $this->userService = $userService;
         $this->userCameraService = $userCameraService;
+        $this->camerassService = $camerassService;
+
     }
     public function list(Request $request){
         $data['page'] = "User Camera";
@@ -24,6 +29,7 @@ class UserCameraController extends Controller
     }
     public function delete(Request $request)
     {
+        $this->camerassService->deleteByCameraId($request->id);
         $this->userCameraService->delete($request->id);
         return 1;
     }

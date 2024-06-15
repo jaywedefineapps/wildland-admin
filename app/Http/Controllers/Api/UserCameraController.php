@@ -67,6 +67,16 @@ class UserCameraController extends Controller
         $response = $this->userCameraService->getByUserId($request->userId);
         return response()->json(['status' => 1,'message' => trans('message.SUCCESS'),'response' => $response], 200);
     }
+    public function listByAddressId(Request $request){
+        $validator = Validator::make($request->all(),[
+            'addressId'=>'required'
+        ]);
+        if($validator->fails()) {
+            return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
+        }
+        $response = $this->userCameraService->getByAddressId(auth()->user()->id,$request->addressId);
+        return response()->json(['status' => 1,'message' => trans('message.SUCCESS'),'response' => $response], 200);
+    }
     public function delete(Request $request){
         $validator = Validator::make($request->all(),[
             'id' => 'required|exists:user_cameras,id',
