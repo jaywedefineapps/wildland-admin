@@ -1,7 +1,6 @@
 
 @php
     $roleAccessesArray = Session::get('roleAccesses', []);
-    dump($roleAccessesArray);
 @endphp
 @if (in_array('dashboard', $roleAccessesArray))
 <div class="menu-item">
