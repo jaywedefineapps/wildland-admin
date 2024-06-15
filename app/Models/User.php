@@ -71,9 +71,17 @@ class User extends Authenticatable
     public function getProfileImageAttribute()
     {
         if ($this->image) {
-            return asset('assets/user_profile/'.$this->image);
+            return getAzureImg($this->image);
         } else {
             return null;
         }
     }
+    // public function getProfileImageAttribute()
+    // {
+    //     if ($this->image) {
+    //         return asset('assets/user_profile/'.$this->image);
+    //     } else {
+    //         return null;
+    //     }
+    // }
 }
