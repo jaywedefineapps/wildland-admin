@@ -11,6 +11,7 @@ use App\Services\CountryService;
 use App\Models\DeactivateReasons;
 use App\Services\UserValveService;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -248,5 +249,47 @@ class UserController extends Controller
         $data['address'] = $this->addressService->getUserAllAddress($request->id);
         $data['type'] = "user";
         return view('admin.users.valve', $data);
+    }
+    public function baseStationDetails(Request $request){
+        $data['page'] = "Base Station Details";
+        $data['title'] = "Base Station Details";
+
+        $headers = [
+            'Authorization' => 'Bearer '.$request->id,
+        ];
+        $personId =  Http::withHeaders($headers)->get('https://api.rach.io/1/public/person/info');
+        if($personId->getStatusCode() == 401){
+            return redirect()->back()->with('error',$personId->json()['errors'][0]['message']);
+        }else if($personId->getStatusCode() == 500){
+            return redirect()->back()->with('error','something went wrong');
+        }
+        $personInfo =  Http::withHeaders($headers)->get('https://api.rach.io/1/public/person/'.$personId->json()['id']);
+        $data['personDetials'] = $personInfo->json();
+        $baseStation =  Http::withHeaders($headers)->get('https://cloud-rest.rach.io/valve/listBaseStations/'.$personId->json()['id']);
+        // dd($baseStation->json());
+        $data['baseStation'] = $baseStation->json();
+        $data['token'] = $request->id;
+        return view('admin.users.basestationdetails', $data);
+    }
+    public function valveList(Request $request){
+        // dd($request->id);
+        $data['page'] = "Valve List";
+        $data['title'] = "Valve List";
+
+        $headers = [
+            'Authorization' => 'Bearer '.decrypt($request->token),
+        ];
+
+        $valveList =  Http::withHeaders($headers)->get('https://cloud-rest.rach.io/valve/listValves/'.$request->id);
+        if($valveList->getStatusCode() == 401){
+            return redirect()->back()->with('error',$valveList->json()['errors'][0]['message']);
+        }
+        if($valveList->getStatusCode() == 403){
+            return redirect()->back()->with('error',$valveList->json()['message']);
+        }
+        $data['valveList'] = $valveList->json();
+
+        return view('admin.users.valvelist', $data);
+
     }
 }

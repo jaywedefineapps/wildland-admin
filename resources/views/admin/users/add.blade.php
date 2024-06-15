@@ -181,7 +181,7 @@
                                 <div class="card-footer">
                                     <div class="text-center">
                                         <button type="submit" id="kt_sign_up_submit" class="btn btn-lg btn-primary">
-                                            <span class="indicator-label">Update</span>
+                                            <span class="indicator-label">Add</span>
                                             <span class="indicator-progress">Please wait...
                                                 <span
                                                     class="spinner-border spinner-border-sm align-middle ms-2"></span></span>

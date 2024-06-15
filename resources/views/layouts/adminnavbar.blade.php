@@ -1,3 +1,8 @@
+
+@php
+    $roleAccessesArray = session('roleAccesses', []);
+@endphp
+@if (in_array('dashboard', $roleAccessesArray))
 <div class="menu-item">
     <a class="menu-link @if (Route::currentRouteName() == 'admin.dashboard') active @endif" href="{{ route('admin.dashboard') }}"
         data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
@@ -19,8 +24,59 @@
         <span class="menu-title">Dashboard</span>
     </a>
 </div>
-
-<div data-kt-menu-trigger="click" class="menu-item menu-accordion @if (in_array(Route::currentRouteName(), ['user.active', 'user.deactive', 'user.banned','admin.addUsers','admin.users.edit'])) show @endif">
+@endif
+@if (in_array('user_managment', $roleAccessesArray))
+<div data-kt-menu-trigger="click" class="menu-item menu-accordion @if (in_array(Route::currentRouteName(), ['accessindex', 'admin.userrole.index', 'roleindex'])) show @endif">
+    <span class="menu-link">
+        <span class="menu-icon">
+            <!--begin::Svg Icon | path: icons/duotune/general/gen022.svg-->
+            <span class="svg-icon svg-icon-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-globe" viewBox="0 0 16 16">
+                    <path
+                        d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855A7.97 7.97 0 0 0 5.145 4H7.5V1.077zM4.09 4a9.267 9.267 0 0 1 .64-1.539 6.7 6.7 0 0 1 .597-.933A7.025 7.025 0 0 0 2.255 4H4.09zm-.582 3.5c.03-.877.138-1.718.312-2.5H1.674a6.958 6.958 0 0 0-.656 2.5h2.49zM4.847 5a12.5 12.5 0 0 0-.338 2.5H7.5V5H4.847zM8.5 5v2.5h2.99a12.495 12.495 0 0 0-.337-2.5H8.5zM4.51 8.5a12.5 12.5 0 0 0 .337 2.5H7.5V8.5H4.51zm3.99 0V11h2.653c.187-.765.306-1.608.338-2.5H8.5zM5.145 12c.138.386.295.744.468 1.068.552 1.035 1.218 1.65 1.887 1.855V12H5.145zm.182 2.472a6.696 6.696 0 0 1-.597-.933A9.268 9.268 0 0 1 4.09 12H2.255a7.024 7.024 0 0 0 3.072 2.472zM3.82 11a13.652 13.652 0 0 1-.312-2.5h-2.49c.062.89.291 1.733.656 2.5H3.82zm6.853 3.472A7.024 7.024 0 0 0 13.745 12H11.91a9.27 9.27 0 0 1-.64 1.539 6.688 6.688 0 0 1-.597.933zM8.5 12v2.923c.67-.204 1.335-.82 1.887-1.855.173-.324.33-.682.468-1.068H8.5zm3.68-1h2.146c.365-.767.594-1.61.656-2.5h-2.49a13.65 13.65 0 0 1-.312 2.5zm2.802-3.5a6.959 6.959 0 0 0-.656-2.5H12.18c.174.782.282 1.623.312 2.5h2.49zM11.27 2.461c.247.464.462.98.64 1.539h1.835a7.024 7.024 0 0 0-3.072-2.472c.218.284.418.598.597.933zM10.855 4a7.966 7.966 0 0 0-.468-1.068C9.835 1.897 9.17 1.282 8.5 1.077V4h2.355z" />
+                </svg>
+            </span>
+            <!--end::Svg Icon-->
+        </span>
+        <span class="menu-title">User Management</span>
+        <span class="menu-arrow"></span>
+    </span>
+    <div class="menu-sub menu-sub-accordion menu-active-bg">
+        <div class="menu-item">
+            <a class="menu-link @if (Route::currentRouteName() == 'roleindex') active @endif" href="{{ route('roleindex') }}"
+                data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                <span class="menu-bullet">
+                    <span class="bullet bullet-dot"></span>
+                </span>
+                <span class="menu-title">Roles</span>
+            </a>
+        </div>
+        <div class="menu-item">
+            <a class="menu-link @if (Route::currentRouteName() == 'admin.userrole.index') active @endif"
+                href="{{ route('admin.userrole.index') }}" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                data-bs-dismiss="click" data-bs-placement="right">
+                <span class="menu-bullet">
+                    <span class="bullet bullet-dot"></span>
+                </span>
+                <span class="menu-title">Users</span>
+            </a>
+        </div>
+        <div class="menu-item">
+            <a class="menu-link @if (Route::currentRouteName() == 'accessindex') active @endif" href="{{ route('accessindex') }}"
+                data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                <span class="menu-bullet">
+                    <span class="bullet bullet-dot"></span>
+                </span>
+                </span>
+                <span class="menu-title">Access</span>
+            </a>
+        </div>
+    </div>
+</div>
+@endif
+@if (in_array('users', $roleAccessesArray))
+<div data-kt-menu-trigger="click" class="menu-item menu-accordion @if (in_array(Route::currentRouteName(), ['user.active', 'admin.user.camera', 'admin.user.address','user.deactive', 'user.banned','admin.addUsers','admin.users.edit'])) show @endif">
     <span class="menu-link" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click"
         data-bs-placement="right">
         <span class="menu-icon">
@@ -42,7 +98,7 @@
     </span>
     <div class="menu-sub menu-sub-accordion menu-active-bg">
         <div class="menu-item">
-            <a class="menu-link @if (in_array(Route::currentRouteName(),['user.active','admin.addUsers','admin.users.edit'])) active @endif" href="{{ route('user.active') }}"
+            <a class="menu-link @if (in_array(Route::currentRouteName(),['user.active','admin.user.camera','admin.addUsers','admin.users.edit','admin.user.address'])) active @endif" href="{{ route('user.active') }}"
                 data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
                 <span class="menu-bullet">
                     <span class="bullet bullet-dot"></span>
@@ -63,6 +119,8 @@
         </div>
     </div>
 </div>
+@endif
+@if (in_array('technician', $roleAccessesArray))
 <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if (in_array(Route::currentRouteName(), ['technician.active', 'user.deactive', 'technician.banned','admin.addTechnician','admin.technician.edit'])) show @endif">
     <span class="menu-link" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click"
         data-bs-placement="right">
@@ -106,6 +164,53 @@
         </div>
     </div>
 </div>
+@endif
+@if (in_array('technician_request', $roleAccessesArray))
+<div data-kt-menu-trigger="click" class="menu-item menu-accordion @if (in_array(Route::currentRouteName(), ['admin.pending.techreq', 'admin.completed.techreq'])) show @endif">
+    <span class="menu-link" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click"
+        data-bs-placement="right">
+        <span class="menu-icon">
+            <!--begin::Svg Icon | path: assets/media/icons/duotune/text/txt009.svg-->
+            <span class="svg-icon svg-icon-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none">
+                    <path
+                        d="M6.28548 15.0861C7.34369 13.1814 9.35142 12 11.5304 12H12.4696C14.6486 12 16.6563 13.1814 17.7145 15.0861L19.3493 18.0287C20.0899 19.3618 19.1259 21 17.601 21H6.39903C4.87406 21 3.91012 19.3618 4.65071 18.0287L6.28548 15.0861Z"
+                        fill="currentColor"></path>
+                    <rect opacity="0.3" x="8" y="3" width="8" height="8" rx="4" fill="currentColor">
+                    </rect>
+                </svg>
+            </span>
+            <!--end::Svg Icon-->
+        </span>
+        <span class="menu-title">Technician request</span>
+        <span class="menu-arrow"></span>
+    </span>
+    <div class="menu-sub menu-sub-accordion menu-active-bg">
+        <div class="menu-item">
+            <a class="menu-link @if (in_array(Route::currentRouteName(),['admin.pending.techreq'])) active @endif" href="{{ route('admin.pending.techreq') }}"
+                data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                <span class="menu-bullet">
+                    <span class="bullet bullet-dot"></span>
+                </span>
+                </span>
+                <span class="menu-title">Pending</span>
+            </a>
+        </div>
+        <div class="menu-item">
+            <a class="menu-link @if (Route::currentRouteName() == 'admin.completed.techreq') active @endif" href="{{ route('admin.completed.techreq') }}"
+                data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                <span class="menu-bullet">
+                    <span class="bullet bullet-dot"></span>
+                </span>
+                </span>
+                <span class="menu-title">Completed</span>
+            </a>
+        </div>
+    </div>
+</div>
+@endif
+@if (in_array('location_managment', $roleAccessesArray))
 <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if (in_array(Route::currentRouteName(), ['admin.country', 'provinces', 'cities'])) show @endif">
     <span class="menu-link">
         <span class="menu-icon">
@@ -153,6 +258,8 @@
         </div>
     </div>
 </div>
+@endif
+@if (in_array('cms', $roleAccessesArray))
 <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if (in_array(Route::currentRouteName(), ['admin.policy', 'admin.terms_condition','deactivereasons','admin.faq'])) show @endif">
     <span class="menu-link">
         <span class="menu-icon">
@@ -215,6 +322,8 @@
         </div>
     </div>
 </div>
+@endif
+@if (in_array('settings', $roleAccessesArray))
 <div class="menu-item">
     <a class="menu-link @if (Route::currentRouteName() == 'settings') active @endif" href="{{ route('settings') }}"
         data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
@@ -234,3 +343,4 @@
         <span class="menu-title">Setting</span>
     </a>
 </div>
+@endif

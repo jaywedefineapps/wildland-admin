@@ -344,7 +344,7 @@
                         if(data == 1) {
                             $('#kt_modal_add_province').modal('toggle');
                             swal.fire({
-                                text: "Form has been successfully submitted!",
+                                text: "Province has been successfully submitted!",
                                 icon: "success",
                                 buttonsStyling: !1,
                                 confirmButtonText: "Ok, got It!",

@@ -360,7 +360,7 @@
                         console.log(data);
                         if(data == 1) {
                             swal.fire({
-                                text: "Form has been successfully submitted!",
+                                text: "Country has been successfully submitted!",
                                 icon: "success",
                                 buttonsStyling: !1,
                                 confirmButtonText: "Ok, got It!",

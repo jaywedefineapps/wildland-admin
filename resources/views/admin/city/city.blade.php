@@ -344,7 +344,7 @@
                         if(data == 1) {
                             $('#kt_modal_add_city').modal('toggle');
                             swal.fire({
-                                text: "Form has been successfully submitted!",
+                                text: "City has been successfully submitted!",
                                 icon: "success",
                                 buttonsStyling: !1,
                                 confirmButtonText: "Ok, got It!",

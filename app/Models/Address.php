@@ -21,6 +21,8 @@ class Address extends Model
         'zipcode',
         'city_id',
         'is_default',
+        'latitude',
+        'longitude',
     ];
     protected $primaryKey = 'id';
     protected $keyType = 'string';

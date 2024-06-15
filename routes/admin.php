@@ -5,13 +5,19 @@ use App\Http\Controllers\Admin\FAQController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AccessController;
+use App\Http\Controllers\Admin\AddressController;
 use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProvinceController;
+use App\Http\Controllers\Admin\UserRoleController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\RoleAccessController;
+use App\Http\Controllers\Admin\UserCameraController;
 use App\Http\Controllers\Admin\PrivacyPolicyController;
 use App\Http\Controllers\Admin\DeactivateReasonsController;
+use App\Http\Controllers\Admin\TechnicainRequestController;
 
 Route::get('/', [AdminController::class, 'index']);
 Route::get('/login', [AdminController::class, 'index'])->name('login_form');
@@ -61,8 +67,41 @@ Route::group(['middleware' => ['admin']], function () {
         Route::post('/deactiveReasonsCreate', 'create')->name('admin.deactivereasons.create');
         Route::post('/deactiveReasonsDelete', 'delete')->name('admin.deletedeactivereasons.delete');
     });
+    Route::controller(TechnicainRequestController::class)->group(function () {
+        Route::get('/pending-technician-request', 'pending')->name('admin.pending.techreq');
+        Route::get('/completed-technician-request', 'completed')->name('admin.completed.techreq');
+        Route::post('/add-technician-request', 'create')->name('admin.add.techreq');
+        Route::post('/get-user-address', 'getAddress')->name('admin.getAddress');
+        Route::post('/technician-request-delete', 'delete')->name('admin.delete.techreq');
+    });
+    
+    Route::controller(AddressController::class)->group(function () {
+        Route::get('/user-address', 'list')->name('admin.user.address');
+        Route::post('/user-address-delete', 'delete')->name('admin.delete.address');
+        Route::post('/getProvince','getProvince')->name('admin.getProvince');
+        Route::post('/getCity','getCity')->name('admin.getCity');
+        Route::post('/add-address', 'create')->name('admin.add.address');
+        Route::post('/defualt-address', 'makeDefualt')->name('admin.address.isDefault');
+    });
+    Route::controller(UserCameraController::class)->group(function () {
+        Route::get('/user-camera', 'list')->name('admin.user.camera');
+        Route::post('/user-camera-delete', 'delete')->name('admin.delete.camera');
+    });
+    Route::get('/access', [AccessController::class, 'index'])->name('accessindex');
+    Route::post('/access-create', [AccessController::class, 'create'])->name('accesscreate');
+    Route::post('/access-delete', [AccessController::class, 'delete'])->name('admin.access.delete');
+    Route::get('/role', [RoleAccessController::class, 'index'])->name('roleindex');
+    Route::post('/role-create', [RoleAccessController::class, 'create'])->name('rolecreate');
+    Route::post('/role-select', [RoleAccessController::class, 'rolesdelected'])->name('rolesdelected');
+    Route::post('/role-delete', [RoleAccessController::class, 'delete'])->name('admin.role.delete');
+    Route::get('/index', [UserRoleController::class, 'index'])->name('admin.userrole.index');
+    Route::get('autocomplete-userrole', [UserRoleController::class, 'autocompleteuserrole'])->name('autocompleteuserrole');
+    Route::post('/userrole-create', [UserRoleController::class, 'create'])->name('userrolecreate');
+    Route::post('/userrole-delete', [UserRoleController::class, 'delete'])->name('admin.userroll.delete');
     Route::controller(UserController::class)->group(function () {
         Route::get('/user-valve', 'userValve')->name('user.valve');
+        Route::get('/basestation-details', 'baseStationDetails')->name('user.basestation.details');
+        Route::get('/valve-dlist', 'valveList')->name('user.valve.list');
         Route::post('/deletedValve', 'deletedValve')->name('user.deletedValve');
         Route::post('/valveVisible', 'isVisible')->name('valve.visible');
         Route::post('/addValve', 'addValve')->name('user.addValve');

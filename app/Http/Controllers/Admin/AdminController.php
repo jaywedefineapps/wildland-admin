@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\RoleAccess;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -19,6 +20,14 @@ class AdminController extends Controller
             'password' => $request->password,
         ])) {
             Auth::guard('business')->logout();
+            $role_id = auth()->guard('admin')->user()->role_id;
+            // dd($role_id);
+            $data['roleAccesses'] = RoleAccess::select('type')
+                ->join('accesses', 'accesses.id', 'role_accesses.access_id')
+                ->where('role_id', $role_id)
+                ->pluck('type')
+                ->toArray();
+            session(['roleAccesses' => $data['roleAccesses']]);
             return redirect()->route('admin.dashboard')->with('success', 'Admin Login Successfully');
         } else {
             return back()->with('error', 'Invalid Email Or Password');

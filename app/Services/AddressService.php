@@ -18,6 +18,9 @@ class AddressService {
     public function userAddresses($id) {
         return $this->address->select('address.*','countries.name as countryName','provinces.name as provinceName','cities.name as cityName')->join('countries','address.country_id','=','countries.id')->join('provinces','address.province_id','=','provinces.id')->join('cities','address.city_id','=','cities.id')->where('user_id',$id)->paginate();
     }
+    public function userAddressesAll($id) {
+        return $this->address->select('address.*','countries.name as countryName','provinces.name as provinceName','cities.name as cityName')->join('countries','address.country_id','=','countries.id')->join('provinces','address.province_id','=','provinces.id')->join('cities','address.city_id','=','cities.id')->where('user_id',$id)->get();
+    }
 
     public function getUserAllAddress($userId){
         return $this->address->where('user_id','=',$userId)->get();
@@ -45,6 +48,9 @@ class AddressService {
 
     public function find($id) {
         return $this->address->find($id);
+    }
+    public function createOrUpdate($data) {
+        return $this->address->updateORcreate(['id'=>$data['id']],$data);
     }
 }
 

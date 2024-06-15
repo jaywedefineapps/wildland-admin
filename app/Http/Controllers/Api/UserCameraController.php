@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
+use App\Services\UserCameraService;
 use App\Http\Controllers\Controller;
 use App\Services\CameraScreenshotService;
-use App\Services\UserCameraService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Services\TechnicianRequestService;
 
 
 class UserCameraController extends Controller
 {
     private $userCameraService;
     private $camerassService;
-    public function __construct(UserCameraService $userCameraService,CameraScreenshotService $camerassService) {
+    private $technicianRequestServie;
+    public function __construct(UserCameraService $userCameraService,CameraScreenshotService $camerassService,TechnicianRequestService $technicianRequestServie) {
         $this->userCameraService = $userCameraService;
         $this->camerassService = $camerassService;
+        $this->technicianRequestServie = $technicianRequestServie;
     }
     public function createCamera(Request $request){
         $validator = Validator::make($request->all(),[
@@ -26,12 +29,15 @@ class UserCameraController extends Controller
             'userName' => 'required',
             'password' => 'required',
             'channels' => 'required|array',
+            'userId'=>'required',
+            'requestId'=>'required',
+
         ]);
         if($validator->fails()) {
             return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
         }
         $data = [
-            'user_id'=>auth()->user()->id,
+            'user_id'=>$request->userId ? $request->userId : auth()->user()->id,
             'address_id'=>$request->addressId,
             'port'=>$request->port,
             'ip_address'=>$request->ipAddress,
@@ -40,15 +46,25 @@ class UserCameraController extends Controller
             'password'=>$request->password,
         ];
         $camera =  $this->userCameraService->create($data);
-
+        $this->technicianRequestServie->update($request->requestId,['time_in'=>now()]);
         foreach ($request->channels as $key => $value) {
-            $this->camerassService->create(['camera_id'=>$camera->id,'channel_no'=>$value['no'],'image'=>null,'user_id'=>auth()->user()->id]);
+            $this->camerassService->create(['camera_id'=>$camera->id,'channel_no'=>$value['no'],'image'=>null,'user_id'=>$request->userId ? $request->userId : auth()->user()->id]);
         }
 
         return response()->json(['status' => 1,'message' => trans('message.SUCCESS')], 200);
     }
     public function list(Request $request){
         $response = $this->userCameraService->getByUserId(auth()->user()->id);
+        return response()->json(['status' => 1,'message' => trans('message.SUCCESS'),'response' => $response], 200);
+    }
+    public function listByUserId(Request $request){
+        $validator = Validator::make($request->all(),[
+            'userId'=>'required'
+        ]);
+        if($validator->fails()) {
+            return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
+        }
+        $response = $this->userCameraService->getByUserId($request->userId);
         return response()->json(['status' => 1,'message' => trans('message.SUCCESS'),'response' => $response], 200);
     }
     public function delete(Request $request){
@@ -76,12 +92,12 @@ class UserCameraController extends Controller
         $validator = Validator::make($request->all(),[
             'port' => 'required',
             'ipAddress' => 'required',
+            'userId' => 'required',
         ]);
         if($validator->fails()) {
             return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
         }
-        $data = $this->userCameraService->getByIpUidPort($request->ipAddress,$request->port,auth()->user()->id);
-        // dd($data);
+        $data = $this->userCameraService->getByIpUidPort($request->ipAddress,$request->port,$request->userId ? $request->userId  : auth()->user()->id);
         if($data->count() != 0){
             return response()->json(['status' => 0, 'message' => 'This device is already added'], 200);
         }else{

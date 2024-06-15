@@ -24,7 +24,7 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-
+     
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'password' => 'required|min:6',
@@ -34,7 +34,7 @@ class AuthController extends Controller
                     return $query->where('phone', $request->phone)->where('country_code', $request->countryCode);
                 })->whereNull('deleted_at'),
             ],
-
+          
             'email' => ['required', Rule::unique('users', 'email')->whereNull('deleted_at')],
             'address' => 'required',
             'zipcode' => 'required',
@@ -42,11 +42,11 @@ class AuthController extends Controller
             'platform' => 'required',
             'countryCode' => 'required',
         ], [
-
+         
             'email.unique' => trans('message.EMAIL_ALREADY_EXIST'),
             'phone.unique' => trans('message.PHONE_ALREADY_EXIST'),
             'password.min' => trans('message.PASS_MIN'),
-        ]);
+        ]);       
 
         if ($validator->fails()) {
             return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
@@ -77,9 +77,9 @@ class AuthController extends Controller
             $response['zipcode'] = $user['zipcode'];
             $response['type'] = $user['type'];
             $response['notification'] = $user['notification'];
-
+           
             return response()->json(['status' => 1, 'message' => 'Successfully Registered', 'response' => $response], 200);
-
+            
         }
     }
     public function login(Request $request)
@@ -100,7 +100,7 @@ class AuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-
+      
 
         if (!auth()->attempt($data)) {
             $user = get_row_by_id($request->email, 'users', 'email');
@@ -114,7 +114,7 @@ class AuthController extends Controller
             $this->userFirebaseService->deletFcm($request->firebaseToken);
 
             $token = auth()->user()->createToken('Token')->accessToken;
-
+         
             $user = auth()->user();
             $response['token'] = $token;
             $response['id'] = $user['id'];

@@ -20,6 +20,7 @@ class CameraScreenshotController extends Controller
             'cameraId' => 'required',
             'image' => 'required',
             'channelNo' => 'required',
+            'userId'=>'required'
         ]);
         if($validator->fails()) {
             return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
@@ -29,7 +30,8 @@ class CameraScreenshotController extends Controller
         //     $imgName = mediaUpload('camera_screenshot', $request->file('image'));
         // }
 
-        $camerass = $this->camerassService->getByChanleNoCameraIdUserId($request->channelNo,$request->cameraId,auth()->user()->id);
+        // $camerass = $this->camerassService->getByChanleNoCameraIdUserId($request->channelNo,$request->cameraId,auth()->user()->id);
+        $camerass = $this->camerassService->getByChanleNoCameraIdUserId($request->channelNo,$request->cameraId,$request->userId);
 
         if($camerass->image != null) {
             unlinkFile('assets/camera_screenshot/'.$camerass->image);
