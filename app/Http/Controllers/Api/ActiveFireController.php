@@ -23,7 +23,7 @@ class ActiveFireController extends Controller
             $rows = explode("\n", trim($csvData));
             $header = str_getcsv(array_shift($rows));
             $data = array();
-        
+
             foreach ($rows as $row) {
                 $rowData = str_getcsv($row);
                 if (count($rowData) == count($header)) {

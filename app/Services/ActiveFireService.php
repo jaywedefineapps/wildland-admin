@@ -30,20 +30,20 @@ class ActiveFireService {
         $usaLonMin = -125.0;
         $usaLonMax = -66.9;
 
-        $firesInCanada = $this->activeFire
+    $firesInCanada = $this->activeFire
         ->where('confidence', '>', 50)
         ->where('brightness', '>', 250)
         ->where('frp', '>', 40)
-        ->whereRaw('CAST(latitude AS FLOAT) BETWEEN ? AND ?', [$canadaLatMin, $canadaLatMax])
-        ->whereRaw('CAST(longitude AS FLOAT) BETWEEN ? AND ?', [$canadaLonMin, $canadaLonMax])
+        ->whereRaw('CAST(latitude AS DECIMAL(10, 6)) BETWEEN ? AND ?', [$canadaLatMin, $canadaLatMax])
+        ->whereRaw('CAST(longitude AS DECIMAL(10, 6)) BETWEEN ? AND ?', [$canadaLonMin, $canadaLonMax])
         ->get();
 
     $firesInUSA = $this->activeFire
         ->where('confidence', '>', 50)
         ->where('brightness', '>', 250)
         ->where('frp', '>', 40)
-        ->whereRaw('CAST(latitude AS FLOAT) BETWEEN ? AND ?', [$usaLatMin, $usaLatMax])
-        ->whereRaw('CAST(longitude AS FLOAT) BETWEEN ? AND ?', [$usaLonMin, $usaLonMax])
+        ->whereRaw('CAST(latitude AS DECIMAL(10, 6)) BETWEEN ? AND ?', [$usaLatMin, $usaLatMax])
+        ->whereRaw('CAST(longitude AS DECIMAL(10, 6)) BETWEEN ? AND ?', [$usaLonMin, $usaLonMax])
         ->get();
 
         $fires = $firesInCanada->merge($firesInUSA);
