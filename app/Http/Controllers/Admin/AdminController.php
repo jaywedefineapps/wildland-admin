@@ -19,7 +19,7 @@ class AdminController extends Controller
             'email' => $request->email,
             'password' => $request->password,
         ])) {
-            Auth::guard('business')->logout();
+            // Auth::guard('business')->logout();
             $role_id = auth()->guard('admin')->user()->role_id;
             // dd($role_id);
             $data['roleAccesses'] = RoleAccess::select('type')
