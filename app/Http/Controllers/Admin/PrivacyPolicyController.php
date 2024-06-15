@@ -15,7 +15,7 @@ class PrivacyPolicyController extends Controller
         $this->policyService = $policyService;
     }
     public function index() {
-        $data['list'] =  $this->policyService->getContentByType('policy');
+        $data['list'] =  $this->policyService->getStaticDataByType('policy');
         $data['page'] = "Privacy Policy";
         $data['title'] = "Privacy Policy";
         return view('admin/policy/policy', $data);
@@ -25,7 +25,7 @@ class PrivacyPolicyController extends Controller
         return redirect('admin/privacy_policy');
     }
     public function terms() {
-        $data['list'] =  $this->policyService->getContentByType('terms');
+        $data['list'] =  $this->policyService->getStaticDataByType('terms');
         $data['page'] = "Terms & Conditions";
         $data['title'] = "Terms & Conditions";
         return view('admin/policy/terms', $data);

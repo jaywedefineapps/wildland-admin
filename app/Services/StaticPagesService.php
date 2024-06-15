@@ -37,7 +37,7 @@ class StaticPagesService
 
     public function getContentByType($type)
     {
-        return $this->staticPages->where('type', $type)->get();
+        return $this->staticPages->where('type', $type)->first();
     }
 
     public function getStaticDataByType($type)

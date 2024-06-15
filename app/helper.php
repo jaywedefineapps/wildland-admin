@@ -24,9 +24,11 @@ if (!function_exists('getAzureImg')) {
         }
     }
 }
-function get_row_by_id($id, $tblname, $colname){
-    return DB::table($tblname)->where($colname,$id)->first();
- }
+if (!function_exists('getAzureImg')) {
+    function get_row_by_id($id, $tblname, $colname){
+        return DB::table($tblname)->where($colname,$id)->first();
+    }
+}
 
 function generateRandomString($length = 25) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
