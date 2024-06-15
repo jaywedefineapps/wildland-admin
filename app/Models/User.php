@@ -68,10 +68,18 @@ class User extends Authenticatable
             set: fn (string $value) => Hash::make($value),
         );
     }
+    // public function getProfileImageAttribute()
+    // {
+    //     if ($this->image) {
+    //         return getAzureImg($this->image);
+    //     } else {
+    //         return null;
+    //     }
+    // }
     public function getProfileImageAttribute()
     {
         if ($this->image) {
-            return getAzureImg($this->image);
+            return asset('assets/user_profile/'.$this->image);
         } else {
             return null;
         }

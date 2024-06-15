@@ -26,7 +26,8 @@ class CameraScreenshot extends Model
     {
         
         if ($this->image) {
-            return getAzureImg($this->image);
+            return asset('assets/camera_screenshot/'.$this->image);
+            // return getAzureImg($this->image);
         } else {
             return null;
         }

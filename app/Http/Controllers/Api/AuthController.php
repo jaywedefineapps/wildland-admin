@@ -55,7 +55,7 @@ class AuthController extends Controller
         $user = $this->userService->create(array_merge($request->all(), ['country_code' => $request->countryCode,'type'=>'user']));
 
         if ($request->hasfile('image')) {
-            $image = mediaUploadAzure('user_profile', $request->file('image'));
+            $image = mediaUpload('user_profile', $request->file('image'));
             $this->userService->update($user['id'], ['image' => $image]);
         }
 
@@ -203,7 +203,8 @@ class AuthController extends Controller
         }
 
         if ($request->hasfile('image')) {
-            $image = mediaUploadAzure('user_profile', $request->file('image'));
+            unlinkFile('assets/user_profile/'.auth()->user()->image);
+            $image = mediaUpload('user_profile', $request->file('image'));
         } else {
             $image = auth()->user()->image;
         }

@@ -195,11 +195,17 @@ class UserController extends Controller
             return back()->withInput()->withErrors($validator->errors());
         }
         if ($request->hasFile('image')) {
-            $imageName = mediaUploadAzure('user_profile', $request->file('image'));
+            if($request->old_image){
+                unlinkFile('assets/user_profile/'.$request->old_image);        
+            }
+            $imageName = mediaUpload('user_profile', $request->file('image'));
         
-        } elseif (isBase64Image($request->hidden_base64_input)) {           
+        } elseif (isBase64Image($request->hidden_base64_input)) {
+            if($request->old_image){
+                unlinkFile('assets/user_profile/'.$request->old_image);
+            }
             $base64data = $request->input('hidden_base64_input');
-            $imageName = mediaUploadAzure('user_profile', $base64data, 'base64');
+            $imageName = mediaUpload('user_profile', $base64data, 'base64');
         
         } else {
             $imageName = $request->old_image;

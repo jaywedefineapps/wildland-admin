@@ -25,6 +25,12 @@ class CameraScreenshotController extends Controller
         if($validator->fails()) {
             return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
         }
+        // $imgName = '';
+        // if ($request->hasfile('image')) {
+        //     $imgName = mediaUpload('camera_screenshot', $request->file('image'));
+        // }
+
+        // $camerass = $this->camerassService->getByChanleNoCameraIdUserId($request->channelNo,$request->cameraId,auth()->user()->id);
         $camerass = $this->camerassService->getByChanleNoCameraIdUserId($request->channelNo,$request->cameraId,$request->userId);
 
         if($camerass->image != null) {
@@ -32,7 +38,7 @@ class CameraScreenshotController extends Controller
         }
         $imgName = '';
         if ($request->hasfile('image')) {
-            $imgName = mediaUploadAzure('camera_screenshot', $request->file('image'));
+            $imgName = mediaUpload('camera_screenshot', $request->file('image'));
         }
         $this->camerassService->update($camerass->id,['image'=>$imgName]);
         return response()->json(['status' => 1,'message' => trans('message.SUCCESS')], 200);
