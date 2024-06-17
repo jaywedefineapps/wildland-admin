@@ -8,18 +8,21 @@ use Illuminate\Http\Request;
 use App\Services\StaticPagesService;
 use App\Services\UserValveService;
 use Illuminate\Support\Facades\Validator;
+use App\Services\HelpSupportsService;
 use Illuminate\Validation\Rule;
 
 class GeneralController extends Controller
 {
     private $staticPageService;
     private $faqService;
+    private $HelpSupportService;
     private $userValveService;
-    public function __construct(StaticPagesService $staticPageService,FaqService $faqService,UserValveService $userValveService)
+    public function __construct(StaticPagesService $staticPageService,FaqService $faqService,UserValveService $userValveService,HelpSupportsService $HelpSupportService)
     {
         $this->staticPageService = $staticPageService;
         $this->userValveService = $userValveService;
         $this->faqService = $faqService;
+        $this->HelpSupportService = $HelpSupportService;
     }
     public function staticPages(Request $request)
     {
@@ -56,6 +59,21 @@ class GeneralController extends Controller
             }
         }
         return response()->json(['status' => 1, 'message' => trans('message.SUCCESS'), 'response' => $response], 200);
+    }
+    public function helpSupport(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'message' => 'required',
+            'type'=>'required'
+        ]);
+
+        if($validator->fails()) {
+            return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
+        }
+
+        $this->HelpSupportService->create(['email' => $request->email, 'message' => $request->message,'type'=>$request->type, 'user_id' => auth()->user()->id]);
+        return response()->json(['status' => 1, 'message' => 'Successfully send'], 200);
     }
 
 }
