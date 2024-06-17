@@ -14,6 +14,7 @@ class Faq extends Model
     protected $fillable = [
         'question',
         'answer',
+        'type',
     ];
     protected $primaryKey = 'id';
     protected $keyType = 'string';

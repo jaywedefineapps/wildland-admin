@@ -119,7 +119,8 @@ Route::group(['middleware' => ['admin']], function () {
         Route::post('/postEdit','postEdit')->name('users.post');
     });
 
-    Route::get('/faq', [FAQController::class, 'index'])->name('admin.faq');
+    Route::get('/user-faq', [FAQController::class, 'userFaq'])->name('admin.faq');
+    Route::get('/technician-faq', [FAQController::class, 'technicianFaq'])->name('admin.faq.technician');
     Route::post('/faq-create', [FAQController::class, 'create'])->name('faq-create');
     Route::post('/faq-delete', [FAQController::class, 'delete'])->name('admin.faq.delete');
 });

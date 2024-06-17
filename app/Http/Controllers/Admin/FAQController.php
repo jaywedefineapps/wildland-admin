@@ -15,11 +15,18 @@ class FAQController extends Controller
         $this->faqService = $faqService;
     }
 
-    public function index(){
+    public function userFaq(){
         $data['type'] = 'user';
-        $data['title'] = "Frequenlty Asked Questions";
-        $data['page'] = "Frequenlty Asked Questions List";
-        $data['list'] = $this->faqService->get();
+        $data['title'] = "User Frequenlty Asked Questions";
+        $data['page'] = "User Frequenlty Asked Questions List";
+        $data['list'] = $this->faqService->getByType('user');
+        return view('admin.faq.faq',$data);
+    }
+    public function technicianFaq(){
+        $data['type'] = 'technician';
+        $data['title'] = "Technician Frequenlty Asked Questions";
+        $data['page'] = "Technician Frequenlty Asked Questions List";
+        $data['list'] = $this->faqService->getByType('technician');
         return view('admin.faq.faq',$data);
     }
 
@@ -30,6 +37,7 @@ class FAQController extends Controller
         $validator = Validator::make($request->all(),[
             "question" => "required",
             'answer' => "required",
+            'type' => "required",
         ]);
         if($validator->fails()){
             return response()->json([

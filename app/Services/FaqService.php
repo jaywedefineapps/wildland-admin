@@ -29,5 +29,8 @@ class FaqService {
     public function get(){
         return $this->faq->get();
     }
+    public function getByType($type){
+        return $this->faq->where('type',$type)->get();
+    }
 
 }

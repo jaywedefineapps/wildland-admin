@@ -37,7 +37,12 @@ class GeneralController extends Controller
     }
 
     public function faq(Request $request){
-        $response = $this->faqService->get();
+        $validator = Validator::make($request->all(), ['type' => ['required', Rule::in(['user', 'technician'])]]);
+
+        if($validator->fails()) {
+            return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
+        }
+        $response = $this->faqService->getByType($request->type);
         return response()->json(['status' => 1, 'message' => trans('message.SUCCESS'), 'response' => $response], 200);
     }
     public function appSettings(Request $request){

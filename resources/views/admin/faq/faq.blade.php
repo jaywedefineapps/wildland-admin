@@ -202,6 +202,7 @@
             <!--begin::Form-->
             <form class="form" id="kt_modal_add_faq_form" enctype="multipart/form-data">
                 @csrf
+                <input type="hidden" name="type" value="{{$type}}">
                 <!--begin::Modal header-->
                 <div class="modal-header" id="kt_modal_add_faq_header">
                     <!--begin::Modal title-->
