@@ -1,5 +1,6 @@
 @extends('layouts.master')
 @section('css')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
 @endsection
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -83,6 +84,7 @@
                             <thead>
                                 <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
                                     <th>No.</th>
+                                    <th class="min-w-125px">Image</th>
                                     <th class="min-w-125px">House no.</th>
                                     <th class="min-w-125px">Address</th>
                                     <th class="min-w-125px">Country</th>
@@ -100,6 +102,11 @@
                                         <td>
                                             <a href="javascript: void(0);" id="roleID" class="text-body fw-bold"></a>
                                             {{ $list->firstItem() + $index }}
+                                        </td>
+                                        <td data-filter="image">
+                                            <img src="@if(!empty($item->image)){{$item->address_image}}@else{{ asset('assets/media/img/no-user.png') }} @endif"
+                                                class="w-50px me-3" alt="Merchant image"
+                                                onclick="toggleFullScreen(this)" loading="lazy" />
                                         </td>
                                         <td>
                                             {{$item->house_no}}
@@ -132,7 +139,7 @@
                                         </td>
                                         <td class="text-end">
                                             <div class="d-flex gap-3">
-                                                <a href="#" data-id="{{ $item->id }}" data-latitude="{{$item->latitude}}" data-longitude="{{$item->longitude}}"
+                                                <a href="#" data-id="{{ $item->id }}" data-address-image="{{$item->address_image}}" data-image="{{$item->image}}" data-latitude="{{$item->latitude}}" data-longitude="{{$item->longitude}}"
                                                     data-house="{{ $item->house_no }}" data-address="{{ $item->address }}" data-country={{$item->country_id}} 
                                                     data-province={{$item->province_id}} data-city={{$item->city_id}} data-zipcode={{$item->zipcode}} data-type={{$item->type}} data-default={{$item->is_default}}
                                                     data-role="editAddress" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Edit address" data-bs-custom-class="tooltip-dark">
@@ -251,6 +258,59 @@
                                 <label class="form-check-label fs-6 fw-bold mb-2" for="is_default_address">Default Address</label>
                                 <input type="hidden" name="is_default" id='is_default' value="">
                             </div>
+                            <center style="padding-top: 25px">
+                                <div class="image-input image-input-circle image-input-empty" data-kt-image-input="true"
+                                    style="background-image: url({{ asset('assets/media/img/noimage.jpg') }})">
+                                    <!--begin::Image preview wrapper-->
+                                    <div class="image-input-wrapper w-125px h-125px" id="show_image_div" loading="lazy"
+                                        onclick="toggleFullScreen(this)"
+                                        style="background-position:center; object-fit: contain;background-image: url('assets/media/img/noimage.jpg')">
+                                    </div>
+
+                                    <!--end::Image preview wrapper-->
+                                    <!--begin::Edit button-->
+                                    <label id="pencil"
+                                        class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="change" data-bs-toggle="tooltip"
+                                        data-bs-dismiss="click" title="Add image">
+                                        <i class="bi bi-pencil-fill fs-7"></i>
+
+                                        <!--begin::Inputs-->
+                                        <input type="file" id="image" name="image"
+                                            accept=".png, .jpg, .jpeg" />
+                                        <input type="hidden" name="hidden_base64_input" id="hidden_base64_input">
+                                        <input type="hidden" name="avatar_remove" value="" />
+                                        <input type="hidden" name="old_image"
+                                            value="" />
+                                        <!--end::Inputs-->
+                                    </label>
+                                    <!--end::Edit button-->
+
+                                    <!--begin::Cancel button-->
+                                    <span
+                                        class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
+                                        data-bs-dismiss="click" title="Cancel avatar">
+                                        <i class="bi bi-x fs-2"></i>
+                                    </span>
+                                    <!--end::Cancel button-->
+
+                                    <!--begin::Remove button-->
+                                    <span
+                                        class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="remove" data-bs-toggle="tooltip"
+                                        data-bs-dismiss="click" title="Remove avatar">
+                                        <i class="bi bi-x fs-2"></i>
+                                    </span>
+                                    <!--end::Remove button-->
+                                </div>
+                                {{-- <label id="image-error" class="error" for="image"></label> --}}
+                            </center>
+                            <center>
+                                @error('image')
+                                    <label class="error" for="">{{ $message }}</label>
+                                @enderror
+                            </center>
                             <!--begin::Label-->
                             <div class="fv-row mb-4 mt-1 radio-class">
                                 <label class="required fs-6 fw-bold mb-2">Type</label>
@@ -346,9 +406,113 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="display_image_model" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" id="kt_modal_add_category_header">
+                <!--begin::Modal title-->
+                <h2 id="model_heading" class="fw-bolder">Image Crop</h2>
+            </div>
+            <div class="modal-body py-10 px-lg-17">
+                <div id="display_image_div">
+                    <img src="" id="sample_image" />
+                </div>
+                <button type="button" id="crop" class="btn btn-primary">Crop</button>
+                <button type="button" class="btn btn-secondary" id="cancel" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 <script>
+    $(document).ready(function() {
+        var $modal = $('#display_image_model');
+        var image = document.getElementById('sample_image');
+        var cropper;
+
+        $('#image').change(function(event) {
+            var files = event.target.files;
+            var done = function(url) {
+                image.src = url;
+                $modal.modal('show');
+            };
+
+            if (files && files.length > 0) {
+                reader = new FileReader();
+                reader.onload = function(event) {
+                    done(reader.result);
+                };
+                reader.readAsDataURL(files[0]);
+            }
+        });
+
+        $modal.on('shown.bs.modal', function() {
+            cropper = new Croppie(image, {
+                viewport: {
+                    width: 300,
+                    height: 300,
+                    type: 'square'
+                },
+                boundary: {
+                    width: 400,
+                    height: 400
+                },
+                enableExif: true,
+            });
+        }).on('hidden.bs.modal', function() {
+            if (cropper) {
+                cropper.destroy();
+            }
+            cropper = null;
+        });
+
+        $('#crop').click(function() {
+            cropper.result({
+                type: 'blob',
+                size: {
+                    width: 300,
+                    height: 300
+                }
+            }).then(function(blob) {
+                var url = URL.createObjectURL(blob);
+
+                // Update the background image of the preview div
+                $('#show_image_div').css('background-image', '');
+                $('#show_image_div').css('background-image', 'url(' + url + ')');
+                $('#image').val('')
+                // Update hidden input with base64
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                    var base64data = reader.result;
+                    $('#hidden_base64_input').val(base64data);
+                };
+                reader.readAsDataURL(blob);
+
+                $modal.modal('hide');
+            });
+        });
+
+        $('#cancel').click(function() {
+            if (cropper) {
+                cropper.destroy();
+            }
+            cropper = null;
+            $('#hidden_base64_input').val('');
+            $modal.modal('hide');
+        });
+    });
+</script>
+<script>
+    $("#pencil").on('click', function() {
+        $('[data-bs-toggle="tooltip"]').tooltip('dispose');
+        $('[data-bs-toggle="tooltip"]').tooltip({
+            trigger: 'hover'
+        })
+    });
     function fetchAndSetProvince(countryId, selectedProvinceId = null) {
         $("#province_id").html('');
         $.ajax({
@@ -407,6 +571,8 @@
         });
     $(document).on('click', 'a[data-role=addAddressButton]', function() {
         $('#kt_modal_add_address_form')[0].reset();
+        $('#show_image_div').css('background-image', 'url({{asset("assets/media/img/noimage.jpg")}})');
+        $('#old_image').val("");
         $('#model_heading').html('Add Address');
         $('#kt_modal_add_address').modal('toggle');
     });
@@ -427,6 +593,8 @@
         var id = $(this).data('id');
         var house = $(this).data('house');
         var address = $(this).data('address');
+        var image = $(this).data('image');
+        var addressimage = $(this).data('address-image');
         var country = $(this).data('country');
         var province = $(this).data('province');
         var city = $(this).data('city');
@@ -449,6 +617,15 @@
         }else{
             $("#is_default").val('0');
         }
+        if (image == "") {
+            $('#old_image').val("");
+            addressimage = "{{asset('assets/media/img/noimage.jpg')}}";
+        }else{
+            $('#old_image').val(image);
+            $('#show_image_div').css('background-image', 'url({{asset("assets/media/img/noimage.jpg")}})');
+        }
+
+        $('#show_image_div').css('background-image', 'url(' + addressimage + ')');
         $("#address_id").val(id);
         $("#latitude").val(latitude);
         $("#longitude").val(longitude);

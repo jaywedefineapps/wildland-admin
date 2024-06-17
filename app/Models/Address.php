@@ -23,8 +23,19 @@ class Address extends Model
         'is_default',
         'latitude',
         'longitude',
+        'image',
     ];
     protected $primaryKey = 'id';
     protected $keyType = 'string';
+    public $appends = ['address_image'];
     public $incrementing = false;
+
+    public function getAddressImageAttribute()
+    {
+        if ($this->image) {
+            return asset('assets/address/'.$this->image);
+        } else {
+            return null;
+        }
+    }
 }

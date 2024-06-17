@@ -62,6 +62,23 @@ class AddressController extends Controller
                 'msg' => $validator->errors(),
             ], 422);
         }
+        if ($request->hasFile('image')) {
+            if($request->old_image){
+                unlinkFile('assets/address/'.$request->old_image);        
+            }
+            $imageName = mediaUpload('address', $request->file('image'));
+        
+        } elseif (isBase64Image($request->hidden_base64_input)) {
+            if($request->old_image){
+                unlinkFile('assets/address/'.$request->old_image);
+            }
+            $base64data = $request->input('hidden_base64_input');
+            $imageName = mediaUpload('address', $base64data, 'base64');
+        
+        } else {
+            $imageName = $request->old_image;
+        }
+        $request->merge(['image'=> $imageName]);
         $this->addressService->createOrUpdate($request->all());
         return 1;
     }
