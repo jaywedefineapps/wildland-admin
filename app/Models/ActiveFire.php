@@ -16,7 +16,7 @@ class ActiveFire extends Model
     protected $fillable = [
         'latitude',
         'longitude',
-        'brightness',
+        'brightness', //bright_ti4 - actule name 
         'scan',
         'track',
         'acq_date',
@@ -25,7 +25,7 @@ class ActiveFire extends Model
         'instrument',
         'confidence',
         'version',
-        'bright_t31',
+        'bright_t31', //bright_ti5- actule name 
         'frp',
         'daynight',
     ];
