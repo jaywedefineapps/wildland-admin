@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\RoleAccessController;
 use App\Http\Controllers\Admin\UserCameraController;
 use App\Http\Controllers\Admin\PrivacyPolicyController;
 use App\Http\Controllers\Admin\DeactivateReasonsController;
+use App\Http\Controllers\Admin\HelpSupportController;
 use App\Http\Controllers\Admin\TechnicainRequestController;
 
 Route::get('/', [AdminController::class, 'index']);
@@ -86,6 +87,10 @@ Route::group(['middleware' => ['admin']], function () {
     Route::controller(UserCameraController::class)->group(function () {
         Route::get('/user-camera', 'list')->name('admin.user.camera');
         Route::post('/user-camera-delete', 'delete')->name('admin.delete.camera');
+    });
+    Route::controller(HelpSupportController::class)->group(function () {
+        Route::get('/user-help-support', 'index')->name('admin.user.helpSupport');
+        Route::get('/technician-help-support', 'technicianList')->name('admin.technician.helpSupport');
     });
     Route::get('/access', [AccessController::class, 'index'])->name('accessindex');
     Route::post('/access-create', [AccessController::class, 'create'])->name('accesscreate');
