@@ -30,8 +30,8 @@ class ActiveFireService {
         $usaLonMin = -125.0;
         $usaLonMax = -66.9;
         $firesInCanada = $this->activeFire
-            // ->where('confidence', '>', 50)
-            // ->where('brightness', '>', 250)
+            ->where('confidence', '>', 50)
+            ->where('brightness', '>', 250)
             // ->where('frp', '>', 40)
             ->where('bright_t31', '>', 298.15)
             ->whereRaw('CAST(latitude AS DECIMAL(10, 6)) BETWEEN ? AND ?', [$canadaLatMin, $canadaLatMax])
@@ -39,10 +39,10 @@ class ActiveFireService {
             ->get();
 
         $firesInUSA = $this->activeFire
-            // ->where('confidence', '>', 50)
-            // ->where('brightness', '>', 250)
-            // ->where('frp', '>', 40)
-            ->where('bright_t31', '>', 298.15)
+            ->where('confidence', '>', 50)
+            ->where('brightness', '>', 250)
+            ->where('frp', '>', 40)
+            // ->where('bright_t31', '>', 298.15)
             ->whereRaw('CAST(latitude AS DECIMAL(10, 6)) BETWEEN ? AND ?', [$usaLatMin, $usaLatMax])
             ->whereRaw('CAST(longitude AS DECIMAL(10, 6)) BETWEEN ? AND ?', [$usaLonMin, $usaLonMax])
             ->get();

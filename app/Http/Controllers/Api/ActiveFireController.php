@@ -17,8 +17,8 @@ class ActiveFireController extends Controller
 
     public function setTableData(){
         $currentDate = Carbon::now()->format('Y-m-d');
-        // $response = Http::get('https://firms.modaps.eosdis.nasa.gov/api/area/csv/5cd8bf082b0eb8dbc40701e0633c65b5/MODIS_NRT/world/1/'.$currentDate ); //2024-06-01');
-        $response = Http::get('https://firms.modaps.eosdis.nasa.gov/api/area/csv/5cd8bf082b0eb8dbc40701e0633c65b5/VIIRS_SNPP_NRT/world/1/'.$currentDate ); //2024-06-01');
+        $response = Http::get('https://firms.modaps.eosdis.nasa.gov/api/area/csv/5cd8bf082b0eb8dbc40701e0633c65b5/MODIS_NRT/world/1/'.$currentDate ); //2024-06-01');
+        // $response = Http::get('https://firms.modaps.eosdis.nasa.gov/api/area/csv/5cd8bf082b0eb8dbc40701e0633c65b5/VIIRS_SNPP_NRT/world/1/'.$currentDate ); //2024-06-01');
         $csvData = $response->body();
         if(!empty($csvData)){
             $rows = explode("\n", trim($csvData));
