@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ViirsSnppNrt extends Model
 {
     use HasFactory, HasUuid ;
-    protected $table = 'active_fires';
+    protected $table = 'viirs_snpp_nrt';
     protected $primaryKey = 'id';
     protected $keyType = 'string';
     public $incrementing = false;

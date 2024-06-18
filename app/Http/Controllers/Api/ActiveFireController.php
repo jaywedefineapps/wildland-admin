@@ -35,6 +35,9 @@ class ActiveFireController extends Controller
                 $this->activeFireService->create($value);
             }
         }
+    }
+    public function setViirnsSnppNrtTableData(){
+        $currentDate = Carbon::now()->format('Y-m-d');
         $responseViirsSnppNrt = Http::get('https://firms.modaps.eosdis.nasa.gov/api/area/csv/5cd8bf082b0eb8dbc40701e0633c65b5/VIIRS_SNPP_NRT/world/1/'.$currentDate ); //2024-06-01');
         $csvData = $responseViirsSnppNrt->body();
         if(!empty($csvData)){
@@ -53,7 +56,6 @@ class ActiveFireController extends Controller
                 $this->activeFireService->createViirsSnppNrt($value);
             }
         }
-        
     }
 
     public function getActiveFireData(Request $request){

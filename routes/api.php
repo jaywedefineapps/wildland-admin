@@ -115,5 +115,6 @@ Route::middleware('auth:api')->group(function () {
 
 Route::controller(ActiveFireController::class)->group(function () {
     Route::get('/setTableData', 'setTableData');
+    Route::get('/setViirnsSnppNrtTableData', 'setViirnsSnppNrtTableData');
     Route::post('/getActiveFireData','getActiveFireData');
 });
