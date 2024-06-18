@@ -28,7 +28,7 @@ class HelpSupportController extends Controller
     }
 
     public function delete(Request $request){
-        $this->helpSupportService->delete($request->id);
+        $this->helpSupportService->delete($request->id); 
         return 1;
     }
 
