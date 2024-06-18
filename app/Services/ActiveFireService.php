@@ -55,9 +55,12 @@ class ActiveFireService {
         //     ->get();
 
         // $fires = $firesInCanada->merge($firesInUSA);
-        $fires  = $this->activeFire->all();
-        $fires2  = $this->viirnsSnppNrt->all();
-        return  $fires2->merge($fires);
+        $fires = $this->activeFire->all();
+        $fires2 = $this->viirnsSnppNrt->all();
+
+        $mergedFires = $fires2->merge($fires);
+
+        return $mergedFires ;
     }
 
 }
