@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('relationship', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        Schema::table('users', function (Blueprint $table) {
+            $table->integer('status')->default(1);     
+           });
     }
 
     /**
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('relationship');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 };

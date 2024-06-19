@@ -265,14 +265,16 @@ class UserController extends Controller
         }
         $personInfo =  Http::withHeaders($headers)->get('https://api.rach.io/1/public/person/'.$personId->json()['id']);
         $data['personDetials'] = $personInfo->json();
-        $baseStation =  Http::withHeaders($headers)->get('https://cloud-rest.rach.io/valve/listBaseStations/'.$personId->json()['id']);
+        $baseStation =  Http::withHeaders($headers)->get('https://cloud-rest.rach.io/valve/listBaseStations/'.$personId->json()['id']); 
+        if($baseStation->getStatusCode() == 429){
+            return redirect()->back()->with('error',$baseStation->json()['message']);
+        }
         // dd($baseStation->json());
         $data['baseStation'] = $baseStation->json();
         $data['token'] = $request->id;
         return view('admin.users.basestationdetails', $data);
     }
     public function valveList(Request $request){
-        // dd($request->id);
         $data['page'] = "Valve List";
         $data['title'] = "Valve List";
 
@@ -290,6 +292,40 @@ class UserController extends Controller
         $data['valveList'] = $valveList->json();
 
         return view('admin.users.valvelist', $data);
+
+    }
+    public function valveHistory(Request $request){
+        $data['page'] = "Valve History";
+        $data['title'] = "Valve History";
+
+        $headers = [
+            'Authorization' => 'Bearer '.decrypt($request->token),
+        ];
+        $data = [
+            'start'=>[
+                'year'=>$startYear,
+                'month'=>$startMonth,
+                'day'=> $startDay
+            ],
+            'end' =>[
+                'year'=>$endYear,
+                'month'=>$endMonth,
+                'day'=> $endDay
+            ],
+            'resourceId' => [
+                'baseStationId'=>$baseStationId
+            ]
+        ];
+        $valveHistory =  Http::withHeaders($headers)->post('https://cloud-rest.rach.io/summary/getValveDayViews',$data);
+        if($valveHistory->getStatusCode() == 401){
+            return redirect()->back()->with('error',$valveHistory->json()['errors'][0]['message']);
+        }
+        if($valveHistory->getStatusCode() == 403){
+            return redirect()->back()->with('error',$valveHistory->json()['message']);
+        }
+        $data['valveHistory'] = $valveHistory->json();
+
+        return view('admin.users.valvehistory', $data);
 
     }
 }

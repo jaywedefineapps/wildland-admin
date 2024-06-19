@@ -35,6 +35,7 @@ class User extends Authenticatable
         'type',
         'verified',
         'deleted_at',
+        'status',
 
     ];
     protected $primaryKey = 'id';

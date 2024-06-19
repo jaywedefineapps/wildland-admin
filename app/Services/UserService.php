@@ -41,18 +41,27 @@ class UserService
     }
 
     public function delete($id){
-        $user = $this->user->find($id);
-        return $user->delete();
+        $user = $this->user->withTrashed()->find($id);
+        $user->update(['status' => 0]);
+         $user->delete();
     }
 
     public function restorUser($id){
-        $post =  $this->user->withTrashed()->find($id);
-        $post->update(['deactive_reasons' => null]);
-        $post->restore();
+        $user =  $this->user->withTrashed()->find($id);
+        $user->update([
+            'deactive_reasons' => null,
+            // 'verified' => 1,
+            'status' => 1
+        ]);
+        $user->restore();
     }
 
     public function activeUsers($data){
         $query = $this->user->newQuery();
+        $query->withTrashed();
+        $query->where('status', 1);
+        $query->where('type', 'user');
+
         if ($data->input('verified') !== null && $data->input('verified') !== '') {
             $query->where('verified', $data->input('verified'));
         }
@@ -63,25 +72,37 @@ class UserService
                          ->orWhere('email', 'LIKE', $searchTerm);
             });
         }
-        return $query->where('type','user')->latest()->paginate();
+        return $query->latest()->paginate();
     }
 
     public function bannedUser($data){
         if($data->input('query')){
+            $searchTerm = "%" . $data->input('query') . "%";
+
             return $this->user
-            ->where(function($query) use ($data) {
-                $searchTerm = "%" . $data->input('query') . "%";
-                $query->where('name', 'LIKE', $searchTerm)
-                      ->orWhere('email', 'LIKE', $searchTerm);
-            })
-            ->onlyTrashed()
-            ->paginate();
+                ->onlyTrashed()
+                ->where(function($query) use ($searchTerm) {
+                    $query->where('name', 'LIKE', $searchTerm)
+                          ->orWhere('email', 'LIKE', $searchTerm);
+                })
+                // ->where('verified', 0)
+                ->where('status',0)
+                ->where('type','user')
+                ->paginate();
         }else{
-             return $this->user->where('type','user')->onlyTrashed()->paginate();
+            return $this->user
+            ->onlyTrashed()
+            ->where('status',0)
+            ->where('type','user')
+            ->paginate();
         }
     }
     public function activeTechnician($data){
         $query = $this->user->newQuery();
+        $query->withTrashed();
+        $query->where('status', 1);
+        $query->where('type', 'technician');
+
         if ($data->input('verified') !== null && $data->input('verified') !== '') {
             $query->where('verified', $data->input('verified'));
         }
@@ -92,21 +113,29 @@ class UserService
                          ->orWhere('email', 'LIKE', $searchTerm);
             });
         }
-        return $query->where('type','technician')->latest()->paginate();
+        return $query->latest()->paginate();
     }
 
     public function bannedTechnician($data){
         if($data->input('query')){
+            $searchTerm = "%" . $data->input('query') . "%";
+
             return $this->user
-            ->where(function($query) use ($data) {
-                $searchTerm = "%" . $data->input('query') . "%";
-                $query->where('name', 'LIKE', $searchTerm)
-                      ->orWhere('email', 'LIKE', $searchTerm);
-            })
-            ->onlyTrashed()
-            ->paginate();
+                ->onlyTrashed()
+                ->where(function($query) use ($searchTerm) {
+                    $query->where('name', 'LIKE', $searchTerm)
+                          ->orWhere('email', 'LIKE', $searchTerm);
+                })
+                // ->where('verified', 0)
+                ->where('status',0)
+                ->where('type','technician')
+                ->paginate();
         }else{
-             return $this->user->where('type','technician')->onlyTrashed()->paginate();
+            return $this->user
+            ->onlyTrashed()
+            ->where('status',0)
+            ->where('type','technician')
+            ->paginate();
         }
     }
 
