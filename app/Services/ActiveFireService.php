@@ -55,8 +55,11 @@ class ActiveFireService {
         //     ->get();
 
         // $fires = $firesInCanada->merge($firesInUSA);
-        $fires = $this->activeFire->all();
-        $fires2 = $this->viirnsSnppNrt->all();
+        // $fires = $this->activeFire->all();
+        // $fires2 = $this->viirnsSnppNrt->all();
+        //temprory condition test
+        $fires = $this->activeFire->where('brightness', '>', 300)->where('confidence', '>', 25)->where('frp', '>', 25)->get();
+        $fires2 = $this->viirnsSnppNrt->where('bright_ti4' , '>' ,300)->where('bright_ti5' , '>' ,280)->where('frp', '>', 0.1)->get();
 
         $mergedFires = $fires2->merge($fires);
 
