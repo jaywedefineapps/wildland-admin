@@ -69,7 +69,7 @@ class ActiveFireController extends Controller
                     $data[] = array_combine($header, $rowData);
                 }
             }
-            $this->activeFireService->truncateViirsSnppNrt();
+            // $this->activeFireService->truncateViirsSnppNrt();
             foreach($data as $value){
                 $this->activeFireService->createViirsSnppNrt($value);
             }
@@ -87,12 +87,13 @@ class ActiveFireController extends Controller
                     $data[] = array_combine($header, $rowData);
                 }
             }
-            $this->activeFireService->truncateViirsSnppNrt();
+            // $this->activeFireService->truncateViirsSnppNrt();
             foreach($data as $value){
                 $this->activeFireService->createViirsSnppNrt($value);
             }
         }
     }
+
 
     public function getActiveFireData(Request $request){
         $data = $this->activeFireService->getFiresInCanadaAndUSA();
