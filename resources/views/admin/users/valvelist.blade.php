@@ -60,6 +60,7 @@
                                 <th class="min-w-125px">Name</th>
                                 <th class="min-w-125px">Connection Id</th>
                                 <th class="min-w-100px">Battery Status</th>
+                                <th class="min-w-100px">Action</th>
                             </tr>
                         </thead>
                         <tbody class="fw-bold text-gray-600">
@@ -83,11 +84,11 @@
                                     <td>
                                         {{ $item['state']['reportedState']['batteryStatus']}}
                                     </td>
-                                    {{-- <td class="text-end">
+                                    <td class="text-end">
                                         <div class="d-flex gap-3">
-                                            <a href="#" id="details" data-role="details"
-                                                data-id="{{ $item['id'] }}"
-                                                data-bs-toggle="tooltip" title="Details"
+                                            <a href="{{route('user.valve.history',['id'=>request()->id,'token'=>request()->token])}}" id="details" data-role="details"
+                                                data-id="{{ request()->id }}" data-token={{request()->token}}
+                                                data-bs-toggle="tooltip" title="Valve history details"
                                                 data-bs-custom-class="tooltip-dark">
                                                 <span class="svg-icon svg-icon-primary svg-icon-2hx">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -97,7 +98,7 @@
                                                 </span>
                                             </a>
                                         </div>
-                                    </td> --}}
+                                    </td>
                                     <!--end::Action=-->
                                 </tr>
                             @endforeach

@@ -106,7 +106,8 @@ Route::group(['middleware' => ['admin']], function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('/user-valve', 'userValve')->name('user.valve');
         Route::get('/basestation-details', 'baseStationDetails')->name('user.basestation.details');
-        Route::get('/valve-dlist', 'valveList')->name('user.valve.list');
+        Route::get('/valve-list', 'valveList')->name('user.valve.list');
+        Route::get('/valve-history', 'valveHistory')->name('user.valve.history');
         Route::post('/deletedValve', 'deletedValve')->name('user.deletedValve');
         Route::post('/valveVisible', 'isVisible')->name('valve.visible');
         Route::post('/addValve', 'addValve')->name('user.addValve');

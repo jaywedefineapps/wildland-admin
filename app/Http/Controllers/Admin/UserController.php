@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use DateTime;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Services\UserService;
@@ -301,7 +302,26 @@ class UserController extends Controller
         $headers = [
             'Authorization' => 'Bearer '.decrypt($request->token),
         ];
-        $data = [
+
+        if ($request->has('date_range')) {
+            $dates = explode('|', $request->date_range);
+            $startOfMonth = Carbon::createFromFormat('Y-m-d', $dates[0]);
+            $endOfMonth = Carbon::createFromFormat('Y-m-d', $dates[1]);
+        } else {
+            $currentDate = Carbon::now();
+            $startOfMonth = $currentDate->copy()->startOfMonth();
+            $endOfMonth = $currentDate->copy()->endOfMonth();
+        }
+    
+        $startYear = $startOfMonth->year;
+        $startMonth = $startOfMonth->month;
+        $startDay = $startOfMonth->day;
+    
+        $endYear = $endOfMonth->year;
+        $endMonth = $endOfMonth->month;
+        $endDay = $endOfMonth->day;
+
+        $formData = [
             'start'=>[
                 'year'=>$startYear,
                 'month'=>$startMonth,
@@ -313,14 +333,17 @@ class UserController extends Controller
                 'day'=> $endDay
             ],
             'resourceId' => [
-                'baseStationId'=>$baseStationId
+                'baseStationId'=>$request->id
             ]
         ];
-        $valveHistory =  Http::withHeaders($headers)->post('https://cloud-rest.rach.io/summary/getValveDayViews',$data);
+        $valveHistory =  Http::withHeaders($headers)->post('https://cloud-rest.rach.io/summary/getValveDayViews',$formData);
         if($valveHistory->getStatusCode() == 401){
             return redirect()->back()->with('error',$valveHistory->json()['errors'][0]['message']);
         }
         if($valveHistory->getStatusCode() == 403){
+            return redirect()->back()->with('error',$valveHistory->json()['message']);
+        }
+        if($valveHistory->getStatusCode() == 412){
             return redirect()->back()->with('error',$valveHistory->json()['message']);
         }
         $data['valveHistory'] = $valveHistory->json();
