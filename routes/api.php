@@ -106,6 +106,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/getAppSettings', 'appSettings');
         Route::post('/faq', 'faq');
         Route::post('/helpSupport','helpSupport');
+        Route::post('/getRelationship','getRelationship');
     });
     Route::controller(UserValveController::class)->group(function () {
         Route::post('/creteValveKey', 'create');

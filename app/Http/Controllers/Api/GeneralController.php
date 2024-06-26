@@ -9,6 +9,7 @@ use App\Services\StaticPagesService;
 use App\Services\UserValveService;
 use Illuminate\Support\Facades\Validator;
 use App\Services\HelpSupportsService;
+use App\Services\RelationshipService;
 use Illuminate\Validation\Rule;
 
 class GeneralController extends Controller
@@ -17,10 +18,12 @@ class GeneralController extends Controller
     private $faqService;
     private $HelpSupportService;
     private $userValveService;
-    public function __construct(StaticPagesService $staticPageService,FaqService $faqService,UserValveService $userValveService,HelpSupportsService $HelpSupportService)
+    private $relationshipservice;
+    public function __construct(StaticPagesService $staticPageService,FaqService $faqService,UserValveService $userValveService,HelpSupportsService $HelpSupportService,RelationshipService $relationshipservice)
     {
         $this->staticPageService = $staticPageService;
         $this->userValveService = $userValveService;
+        $this->relationshipservice = $relationshipservice;
         $this->faqService = $faqService;
         $this->HelpSupportService = $HelpSupportService;
     }
@@ -46,6 +49,10 @@ class GeneralController extends Controller
             return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
         }
         $response = $this->faqService->getByType($request->type);
+        return response()->json(['status' => 1, 'message' => trans('message.SUCCESS'), 'response' => $response], 200);
+    }
+    public function getRelationship(Request $request){
+        $response = $this->relationshipservice->all();
         return response()->json(['status' => 1, 'message' => trans('message.SUCCESS'), 'response' => $response], 200);
     }
     public function appSettings(Request $request){

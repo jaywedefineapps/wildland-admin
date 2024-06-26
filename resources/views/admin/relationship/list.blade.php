@@ -405,8 +405,8 @@
     // <!--End::Country Delete Function-->
 
     // <!--Start::Country Model Close Function-->
-        $('#kt_modal_add_relatoinship_close').click(function() {
-            $('#kt_modal_add_relatoinship').modal('toggle');
+        $('#kt_modal_add_relationship_close').click(function() {
+            $('#kt_modal_add_relationship').modal('toggle');
         })
     // <!--End::Country Model Close Function-->
     });

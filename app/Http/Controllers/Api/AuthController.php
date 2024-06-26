@@ -195,6 +195,7 @@ class AuthController extends Controller
             $response['address'] = $user['address'];
             $response['zipcode'] = $user['zipcode'];
             $response['type'] = $user['type'];
+            $response['relationship_type'] = $user['relationship_type'];
             $response['notification'] = $user['notification'];
             $response['fcmId'] = $this->userFirebaseService->create(['user_id' => $user['id'], 'fcm_token' => $request->firebaseToken, 'platform' => $request->platform])->id;
 
