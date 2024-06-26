@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\UserCameraController;
 use App\Http\Controllers\Admin\PrivacyPolicyController;
 use App\Http\Controllers\Admin\DeactivateReasonsController;
 use App\Http\Controllers\Admin\HelpSupportController;
+use App\Http\Controllers\Admin\RelationshipController;
 use App\Http\Controllers\Admin\TechnicainRequestController;
 
 Route::get('/', [AdminController::class, 'index']);
@@ -42,6 +43,11 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('/edit-profile',[ProfileController::class,'edit'])->name('admin.edit.profile');
     Route::get('/update-profile',[ProfileController::class,'update'])->name('admin.update.profile');
 
+    Route::controller(RelationshipController::class)->group(function () {
+        Route::get('/relatoinship', 'index')->name('admin.relationship');
+        Route::post('/relatoinship-create', 'create')->name('admin.relationship.create');
+        Route::post('/relatoinship-delete', 'delete')->name('admin.relationship.delete');
+    });
     Route::controller(CountryController::class)->group(function () {
         Route::get('/countries', 'index')->name('admin.country');
         Route::post('/country-create', 'create')->name('admin.country.create');

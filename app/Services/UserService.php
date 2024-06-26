@@ -39,6 +39,9 @@ class UserService
     public function getByEmail($email) {
         return $this->user->where('email',$email)->first();
     }
+    public function getByParentId($id) {
+        return $this->user->where('parent_id',$id)->select('users.*','relationship.name as relationshipName')->join('relationship','users.relationship_id','=','relationship.id')->get();
+    }
 
     public function delete($id){
         $user = $this->user->withTrashed()->find($id);

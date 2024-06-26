@@ -18,6 +18,7 @@ return [
     'SUCCESS_LOGIN' => 'Successfully logged in',
     'LOGGED_OUT' => 'Successfully logged out',
     'SUCCESSFULLY_UPDATED' => 'Successfully Updated',
+    'SUCCESSFULLY_DELETED' => 'Successfully Deleted',
     'ACCOUNT_DELETED' => 'Account Deleted',
 
     'WRONG_OLD_PASSWORD' => 'Old password is wrong',

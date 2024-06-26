@@ -78,6 +78,11 @@ Route::middleware('auth:api')->group(function () {
         Route::post('deleteAccount', 'deleteAccount');
         Route::post("changePassword", 'changePassword');
         Route::post("getProfile", 'getProfile');
+
+        Route::post('addFamilyMember', 'addFamilyMember');
+        Route::post('editFamilyMember', 'editFamilyMember');
+        Route::post('deleteFamilyMember', 'deleteFamilyMember');
+        Route::post('getFamilyMember', 'getFamilyMember');
     });
     Route::controller(AddressController::class)->group(function () {
         Route::post('/addresses', 'userAddresses');

@@ -34,9 +34,11 @@ class User extends Authenticatable
         'zipcode',
         'type',
         'verified',
+        'relationship_type',
+        'parent_id',
+        'relationship_id',
         'deleted_at',
         'status',
-
     ];
     protected $primaryKey = 'id';
     protected $keyType = 'string';

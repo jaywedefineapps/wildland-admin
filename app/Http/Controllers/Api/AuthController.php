@@ -82,6 +82,75 @@ class AuthController extends Controller
             
         }
     }
+    public function addFamilyMember(Request $request){
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'relationship_id' => 'required',
+            'password' => 'required|min:6',
+            'email' => ['required', Rule::unique('users', 'email')->whereNull('deleted_at')],
+            'phone' => [
+                'required',
+                Rule::unique('users')->where(function (Builder $query) use ($request) {
+                    return $query->where('phone', $request->phone)->where('country_code', $request->countryCode);
+                })->whereNull('deleted_at'),
+            ],
+            'countryCode' => 'required',
+        ], [
+            'phone.unique' => trans('message.PHONE_ALREADY_EXIST'),
+            'email.unique' => trans('message.EMAIL_ALREADY_EXIST'),
+            'password.min' => trans('message.PASS_MIN'),
+        ]);       
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
+        }
+
+        $user = $this->userService->create(array_merge($request->all(), ['country_code' => $request->countryCode,'type'=>'user','relationship_type'=>'child','parent_id'=>auth()->user()->id,]));
+
+        if ($request->hasfile('image')) {
+            $image = mediaUpload('user_profile', $request->file('image'));
+            $this->userService->update($user['id'], ['image' => $image]);
+        }
+
+        //send the email to new added user with login credantioals
+        //===
+        return response()->json(['status' => 1, 'message' => 'Successfully Added'], 200);
+    }
+
+    public function editFamilyMember(Request $request){
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'userId'=>'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 0, 'message' => trans('message.ALL_FIELDS_REQUIRED')], 200);
+        }
+        $user = $this->userService->find($request->userId);
+        if ($request->hasfile('image')) {
+            unlinkFile('assets/user_profile/'.$user->image);
+            $image = mediaUpload('user_profile', $request->file('image'));
+        } else {
+            $image = $user->image ?? null;
+        }
+
+        $this->userService->update($request->userId, ['image' => $image, 'name' => $request->name,'relationship_id'=>$request->relationship_id]);
+        return response()->json(['status' => 1, 'message' => trans('message.SUCCESSFULLY_UPDATED')], 200);
+    }
+    public function deleteFamilyMember(Request $request){
+        $validator = Validator::make($request->all(), [
+            'userId'=>'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 0, 'message' => trans('message.ALL_FIELDS_REQUIRED')], 200);
+        }
+
+        $this->userService->delete($request->userId);
+        return response()->json(['status' => 1, 'message' => trans('message.SUCCESSFULLY_DELETED')], 200);
+    }
+    public function getFamilyMember(Request $request){
+        $response = $this->userService->getByParentId(auth()->user()->id);
+        return response()->json(['status' => 1, 'message' => trans('message.SUCCESS'), 'response' => $response], 200);
+    }
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
