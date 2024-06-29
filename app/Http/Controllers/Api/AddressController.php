@@ -15,7 +15,11 @@ class AddressController extends Controller
     }
 
     public function userAddresses() {
-        return response()->json(['status' => 1,'message' => trans('message.SUCCESS'), 'response' => $this->addressService->userAddresses(auth()->user()->id)->items()], 200);
+        if(auth()->user()->relationship_type == 'child'){
+            return response()->json(['status' => 1,'message' => trans('message.SUCCESS'), 'response' => $this->addressService->userAddresses(auth()->user()->parent_id)->items()], 200);
+        }else{
+            return response()->json(['status' => 1,'message' => trans('message.SUCCESS'), 'response' => $this->addressService->userAddresses(auth()->user()->id)->items()], 200);
+        }
     }
 
     public function manage(Request $request) {

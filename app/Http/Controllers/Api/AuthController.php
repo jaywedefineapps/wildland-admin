@@ -197,6 +197,7 @@ class AuthController extends Controller
             $response['type'] = $user['type'];
             $response['relationship_type'] = $user['relationship_type'];
             $response['notification'] = $user['notification'];
+            $response['parent_id'] = $user['parent_id'];
             $response['fcmId'] = $this->userFirebaseService->create(['user_id' => $user['id'], 'fcm_token' => $request->firebaseToken, 'platform' => $request->platform])->id;
 
             return response()->json(['status' => 1, 'message' => trans('message.SUCCESS_LOGIN'), 'response' => $response], 200);

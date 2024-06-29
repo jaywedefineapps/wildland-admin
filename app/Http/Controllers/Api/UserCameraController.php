@@ -54,7 +54,11 @@ class UserCameraController extends Controller
         return response()->json(['status' => 1,'message' => trans('message.SUCCESS')], 200);
     }
     public function list(Request $request){
-        $response = $this->userCameraService->getByUserId(auth()->user()->id);
+        if(auth()->user()->relationship_type == 'child'){
+            $response = $this->userCameraService->getByUserId(auth()->user()->parent_id);
+        }else{
+            $response = $this->userCameraService->getByUserId(auth()->user()->id);
+        }
         return response()->json(['status' => 1,'message' => trans('message.SUCCESS'),'response' => $response], 200);
     }
     public function listByUserId(Request $request){
@@ -74,7 +78,11 @@ class UserCameraController extends Controller
         if($validator->fails()) {
             return response()->json(['status' => 0, 'message' => $validator->messages()->first()], 200);
         }
-        $response = $this->userCameraService->getByAddressId(auth()->user()->id,$request->addressId);
+        if(auth()->user()->relationship_type == 'child'){
+            $response = $this->userCameraService->getByAddressId(auth()->user()->parent_id,$request->addressId);
+        }else{
+            $response = $this->userCameraService->getByAddressId(auth()->user()->id,$request->addressId);
+        }
         return response()->json(['status' => 1,'message' => trans('message.SUCCESS'),'response' => $response], 200);
     }
     public function delete(Request $request){
