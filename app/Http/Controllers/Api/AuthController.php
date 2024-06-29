@@ -127,7 +127,9 @@ class AuthController extends Controller
         }
         $user = $this->userService->find($request->userId);
         if ($request->hasfile('image')) {
-            unlinkFile('assets/user_profile/'.$user->image);
+            if($user->image){
+                unlinkFile('assets/user_profile/'.$user->image);
+            }
             $image = mediaUpload('user_profile', $request->file('image'));
         } else {
             $image = $user->image ?? null;
