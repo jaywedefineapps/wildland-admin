@@ -24,7 +24,7 @@ if (!function_exists('getAzureImg')) {
         }
     }
 }
-if (!function_exists('getAzureImg')) {
+if (!function_exists('get_row_by_id')) {
     function get_row_by_id($id, $tblname, $colname){
         return DB::table($tblname)->where($colname,$id)->first();
     }
